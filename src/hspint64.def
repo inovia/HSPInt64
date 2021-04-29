@@ -1,0 +1,24 @@
+EXPORTS
+	Test_Int_Ret_Int
+	Test_Float_Ret_Float
+	Test_Double_Ret_Double
+	Test_Int64_Ret_Int64
+
+	Test_Int_Double_Float_Ret_Int
+	Test_Int_Double_Float_Ret_Float
+	Test_Int_Double_Float_Ret_Double
+	Test_Int_Double_Float_Int64_Ret_Int64
+
+	Test_Int_IntP_Ret_Void
+	Test_Float_FloatP_Ret_Void
+	Test_Double_DoubleP_Ret_Void
+	Test_Int64_Int64P_Ret_Void
+
+	Test_Int_Double_Float_Int_Double_Float_DoubleP_Ret_Void
+	Test_Int64_Int64_Int64_Int64_Int64_double_double_double_double_double_Int64P_Ret_Void
+
+	Test_Ret_Str
+	Test_Ret_StrW
+	Test_POINT_Ret_Int
+	Test_POINT_Ret_Int2
+	Test_POINT_Ret_Int3

@@ -13,9 +13,11 @@
 #include "hspvar_core.h"
 #include "hsp3debug.h"
 
+#include "hspvar_float.h"
+
 /*------------------------------------------------------------*/
 /*
-		HSPVAR core interface (float)
+		HSPVAR core interface (int64)
 */
 /*------------------------------------------------------------*/
 
@@ -42,22 +44,46 @@ void *HspVarInt64_Cnv(const void *buffer, int flag)
 	//
 
 	// 自信の型の場合
-	if (flag == mytype){
+	if (flag == mytype)
+	{
 		return (void *)buffer;
 	}
 
 	switch (flag) {
 	case HSPVAR_FLAG_STR:
-		conv = (INT64)_atoi64((char *)buffer);
+	{
+		const int array[] = { 'X','x','$' };
+		const char* ch = (const char *)buffer;
+
+		int base = 10;
+		for ( int i = 0; i < sizeof(array) / sizeof(int); i++)
+		{
+			const char* seekPos = strchr(ch, array[i]);
+			if ( seekPos != nullptr && *(seekPos + 1) != '\0')		// 次が終端NULLでないか？
+			{
+				base = 16;
+				ch = seekPos + 1;
+				break;
+			}
+		}
+
+		conv = (INT64)_strtoi64(ch, nullptr, base);
 		return &conv;
+	}
 	case HSPVAR_FLAG_INT:
 		conv = (INT64)(*(int *)buffer);
 		return &conv;
 	case HSPVAR_FLAG_DOUBLE:
 		conv = (INT64)(*(double *)buffer);
 		return &conv;
-		break;
 	default:
+		if (flag == HspVarFloat_typeid())
+		{
+			conv = (INT64)(*(float *)buffer);
+			return &conv;
+		}
+		else;
+
 		throw HSPVAR_ERROR_TYPEMISS;
 	}
 	return (void *)buffer;
@@ -84,6 +110,13 @@ static void *HspVarInt64_CnvCustom(const void *buffer, int flag)
 		*(double *)custom = (double)p;
 		break;
 	default:
+		if (flag == HspVarFloat_typeid())
+		{
+			*(float *)custom = (float)p;
+			break;
+		}
+		else;
+
 		throw HSPVAR_ERROR_TYPEMISS;
 	}
 	return custom;
@@ -191,6 +224,33 @@ static void HspVarInt64_DivI( PDAT *pval, const void *val )
 	*aftertype = mytype;
 }
 
+// Mod
+static void HspVarInt64_ModI(PDAT *pval, const void *val)
+{
+	INT64 p = *((INT64 *)(val));
+	if (p == 0) throw(HSPVAR_ERROR_DIVZERO);
+	*GetPtr(pval) %= p;
+}
+
+
+// And
+static void HspVarInt64_AndI(PDAT *pval, const void *val)
+{
+	*GetPtr(pval) &= *((INT64 *)(val));
+}
+
+// Or
+static void HspVarInt64_OrI(PDAT *pval, const void *val)
+{
+	*GetPtr(pval) |= *((INT64 *)(val));
+}
+
+// Xor
+static void HspVarInt64_XorI(PDAT *pval, const void *val)
+{
+	*GetPtr(pval) ^= *((INT64 *)(val));
+}
+
 // Eq
 static void HspVarInt64_EqI( PDAT *pval, const void *val )
 {
@@ -232,6 +292,19 @@ static void HspVarInt64_LtEqI( PDAT *pval, const void *val )
 	*((int *)pval) = (*GetPtr(pval) <= *((INT64 *)(val)));
 	*aftertype = HSPVAR_FLAG_INT;
 }
+
+// Rr
+static void HspVarInt64_RrI(PDAT *pval, const void *val)
+{
+	*GetPtr(pval) >>= *((INT64 *)(val));
+}
+
+// Lr
+static void HspVarInt64_LrI(PDAT *pval, const void *val)
+{
+	*GetPtr(pval) <<= *((INT64 *)(val));
+}
+
 
 /*
 // INVALID
@@ -311,11 +384,11 @@ EXPORT void HspVarInt64_Init( HspVarProc *p )
 	p->SubI = HspVarInt64_SubI;
 	p->MulI = HspVarInt64_MulI;
 	p->DivI = HspVarInt64_DivI;
-//	p->ModI = HspVarInt64_Invalid;
+	p->ModI = HspVarInt64_ModI;
 
-//	p->AndI = HspVarInt64_Invalid;
-//	p->OrI  = HspVarInt64_Invalid;
-//	p->XorI = HspVarInt64_Invalid;
+	p->AndI = HspVarInt64_AndI;
+	p->OrI = HspVarInt64_OrI;
+	p->XorI = HspVarInt64_XorI;
 
 	p->EqI = HspVarInt64_EqI;
 	p->NeI = HspVarInt64_NeI;
@@ -324,12 +397,12 @@ EXPORT void HspVarInt64_Init( HspVarProc *p )
 	p->GtEqI = HspVarInt64_GtEqI;
 	p->LtEqI = HspVarInt64_LtEqI;
 
-//	p->RrI = HspVarInt64_Invalid;
-//	p->LrI = HspVarInt64_Invalid;
+	p->RrI = HspVarInt64_RrI;
+	p->LrI = HspVarInt64_LrI;
 
 	p->vartype_name = "int64";				// タイプ名
 	p->version = 0x001;					// 型タイプランタイムバージョン(0x100 = 1.0)
-	p->support = HSPVAR_SUPPORT_STORAGE|HSPVAR_SUPPORT_FLEXARRAY;
+	p->support = HSPVAR_SUPPORT_STORAGE | HSPVAR_SUPPORT_FLEXARRAY;
 										// サポート状況フラグ(HSPVAR_SUPPORT_*)
 	p->basesize = sizeof(INT64);		// １つのデータが使用するサイズ(byte) / 可変長の時は-1
 	mytype = p->flag;
