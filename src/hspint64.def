@@ -22,3 +22,7 @@ EXPORTS
 	Test_POINT_Ret_Int
 	Test_POINT_Ret_Int2
 	Test_POINT_Ret_Int3
+	Test_Ret_POINT
+	Test_Ret_POINTP
+	Test_Ret_RECT
+	Test_Ret_RECTP

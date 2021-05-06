@@ -4,9 +4,6 @@
 #uselib "user32.dll"
 #func MessageBox "MessageBoxA" int,int,int,int
 
-	INT64_ZERO = int64(0)
-	INT64_ONE = int64(1)
-
 	a = "こんにちは"
 	b = "てすと"
 
@@ -17,26 +14,19 @@
 	dimtype prmData, vartype("int64"), 4
 	prmData = int64(hwnd), varptr64(a), varptr64(b), int64(MB_OK | MB_ICONINFORMATION)
 	
-	dimtype prmInfo, vartype("int64"), 4
-	prmInfo = INT64_ZERO, INT64_ZERO, INT64_ZERO, INT64_ZERO
-	
 	// 
 	// callfunc64i()
 	// 外部関数を実行します
 	// 戻り値: int64
 	// 
 	// 第1引数: 実行先関数の引数データ（配列）
-	// 第2引数: 実行先関数の引数の型情報（配列）
-	//          引数が int/int64の場合は、INT64_ZERO
-	//          引数が flaot/doubleの場合は、INT64_ONE
-	//          を指定します。
-	// 第3引数: 関数のアドレス
-	// 第4引数: 実行先関数の引数の数 (= 配列の要素数)
+	// 第2引数: 関数のアドレス
+	// 第3引数: 実行先関数の引数の数 (= 配列の要素数)
 	// 
 	// ※ 戻り値がdouble版は「callfunc64d」関数
 	//            float版は「callfunc64f」関数
 	// 
-	mes "MessageBox()の戻り値: " + callfunc64i(prmData, prmInfo, varptr64(MessageBox), 4)
+	mes "MessageBox()の戻り値: " + callfunc64i(prmData, varptr64(MessageBox), 4)
 
 	// 
 	// int64()

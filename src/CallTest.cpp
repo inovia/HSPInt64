@@ -134,3 +134,25 @@ EXPORT int WINAPI Test_POINT_Ret_Int3(INT64 pt)
 {
 	return (int)pt;
 }
+
+EXPORT POINT* WINAPI Test_Ret_POINTP(void)
+{
+	static POINT pt = { 0x12, 0x34 };
+	return &pt;
+}
+
+EXPORT POINT WINAPI Test_Ret_POINT(void)
+{
+	return *Test_Ret_POINTP();
+}
+
+EXPORT RECT* WINAPI Test_Ret_RECTP(void)
+{
+	static RECT rc = { 0x12, 0x34, 0x56, 0x78 };
+	return &rc;
+}
+
+EXPORT RECT WINAPI Test_Ret_RECT(void)
+{
+	return *Test_Ret_RECTP();
+}

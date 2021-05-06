@@ -275,7 +275,7 @@ static void HspVarInt64_GtI( PDAT *pval, const void *val )
 // Lt
 static void HspVarInt64_LtI( PDAT *pval, const void *val )
 {
-	*((int *)pval) = ( *GetPtr(pval) < *((float *)(val)) );
+	*((int *)pval) = ( *GetPtr(pval) < *((INT64 *)(val)) );
 	*aftertype = HSPVAR_FLAG_INT;
 }
 

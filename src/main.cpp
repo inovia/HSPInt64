@@ -19,6 +19,8 @@
 #include "hspvar_float.h"
 #include "hspvar_strw.h"
 
+// TODO: ごちゃごちゃしてきたので、整理予定
+
 enum class RET_TYPE : int
 {
 	Void		= -1,		// void型用
@@ -30,6 +32,9 @@ enum class RET_TYPE : int
 	Str			= 5,		// 文字列型で返します
 	StrW		= 6,		// Unicode文字列型(UTF-16)で返します
 };
+
+// func形式で呼ぶ場合（cmd の最上位ビットをつけるだけ）
+#define CALL_FUNC_TYPE 0x80000000
 
 // 64bit dll call
 extern "C" INT64 CallFunc64(INT64 *, FARPROC, int);
@@ -48,6 +53,10 @@ extern "C" float CallFunc64f(INT64 *, FARPROC, int);
 
 static void *reffunc( int *type_res, int cmd )
 {
+	// 最上位ビットが立っているときは、Func(関数形式)扱い
+	bool bFunc = (cmd & CALL_FUNC_TYPE) != 0;
+	cmd &= ~(CALL_FUNC_TYPE);
+
 	// 戻り値の変数
 	static INT64 ref_int64val;						
 	static double ref_doubleval;
@@ -58,21 +67,25 @@ static void *reffunc( int *type_res, int cmd )
 	// 戻り値の型
 	RET_TYPE ref_type;
 
-	//		関数・システム変数の実行処理 (値の参照時に呼ばれます)
-	//
-	//			'('で始まるかを調べる
-	//
-	if (*type != TYPE_MARK)
+	// 関数形式の場合
+	if (!bFunc)
 	{
-		puterror(HSPERR_INVALID_FUNCPARAM);
-	}
+		//		関数・システム変数の実行処理 (値の参照時に呼ばれます)
+		//
+		//			'('で始まるかを調べる
+		//
+		if (*type != TYPE_MARK)
+		{
+			puterror(HSPERR_INVALID_FUNCPARAM);
+		}
 
-	if (*val != '(')
-	{
-		puterror(HSPERR_INVALID_FUNCPARAM);
-	}
+		if (*val != '(')
+		{
+			puterror(HSPERR_INVALID_FUNCPARAM);
+		}
 
-	code_next();
+		code_next();
+	}
 
 	switch( cmd ) {							// サブコマンドごとの分岐
 
@@ -610,53 +623,57 @@ static void *reffunc( int *type_res, int cmd )
 		puterror( HSPERR_UNSUPPORTED_FUNCTION );
 	}
 
-	//			'('で終わるかを調べる
-	//
-	if ( *type != TYPE_MARK)
+	// 関数形式の場合
+	if (!bFunc)
 	{
-		puterror(HSPERR_INVALID_FUNCPARAM);
-	}
+		//			')'で終わるかを調べる
+		//
+		if (*type != TYPE_MARK)
+		{
+			puterror(HSPERR_INVALID_FUNCPARAM);
+		}
 
-	if ( *val != ')')
-	{
-		puterror(HSPERR_INVALID_FUNCPARAM);
-	}
+		if (*val != ')')
+		{
+			puterror(HSPERR_INVALID_FUNCPARAM);
+		}
 
-	code_next();
+		code_next();
 
-	switch (ref_type)
-	{
-	case RET_TYPE::Void:
-	case RET_TYPE::Int:
-		*type_res = HSPVAR_FLAG_INT;
-		return (void *)&ref_int64val;
+		switch (ref_type)
+		{
+		case RET_TYPE::Void:
+		case RET_TYPE::Int:
+			*type_res = HSPVAR_FLAG_INT;
+			return (void *)&ref_int64val;
 
-	case RET_TYPE::Int64:
-		*type_res = HspVarInt64_typeid();
-		return (void *)&ref_int64val;
+		case RET_TYPE::Int64:
+			*type_res = HspVarInt64_typeid();
+			return (void *)&ref_int64val;
 
-	case RET_TYPE::Double:
-		*type_res = HSPVAR_FLAG_DOUBLE;
-		return (void *)&ref_doubleval;
+		case RET_TYPE::Double:
+			*type_res = HSPVAR_FLAG_DOUBLE;
+			return (void *)&ref_doubleval;
 
-	case RET_TYPE::Float:
-		*type_res = HspVarFloat_typeid();
-		return (void *)&ref_floatval;
+		case RET_TYPE::Float:
+			*type_res = HspVarFloat_typeid();
+			return (void *)&ref_floatval;
 
-	case RET_TYPE::FloatInt:
-		*type_res = HSPVAR_FLAG_INT;
-		return (void *)&ref_floatval;
+		case RET_TYPE::FloatInt:
+			*type_res = HSPVAR_FLAG_INT;
+			return (void *)&ref_floatval;
 
-	case RET_TYPE::Str:
-		*type_res = HSPVAR_FLAG_STR;
-		return (void *)ref_strval.GetBuffer();
+		case RET_TYPE::Str:
+			*type_res = HSPVAR_FLAG_STR;
+			return (void *)ref_strval.GetBuffer();
 
-	case RET_TYPE::StrW:
-		*type_res = HspVarStrW_typeid();
-		return (void *)ref_strwval.GetBuffer();
+		case RET_TYPE::StrW:
+			*type_res = HspVarStrW_typeid();
+			return (void *)ref_strwval.GetBuffer();
 
-	default:
-		break;
+		default:
+			break;
+		}
 	}
 
 	// 来ない想定
@@ -769,6 +786,12 @@ static int cmdfunc(int cmd)
 		code_setva(pval, aptr, nTypeid_StrW, buf.GetBuffer());
 		buf.ReleaseBuffer();
 
+		break;
+	}
+	case 0x100:		// cfunc64v() 関数側に実装アリ
+	{
+		int type;
+		reffunc( &type, CALL_FUNC_TYPE | cmd);
 		break;
 	}
 
