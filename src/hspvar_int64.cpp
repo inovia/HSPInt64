@@ -66,8 +66,9 @@ void *HspVarInt64_Cnv(const void *buffer, int flag)
 				break;
 			}
 		}
-
-		conv = (INT64)_strtoi64(ch, nullptr, base);
+		
+		// _strtoi64 ÇæÇ∆ 0xFEDCBA0987654321 Ç»Ç«Ç™É_ÉÅÅB
+		conv = (INT64)_strtoui64(ch, nullptr, base);
 		return &conv;
 	}
 	case HSPVAR_FLAG_INT:
