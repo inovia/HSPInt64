@@ -1,15 +1,15 @@
-â˜† hspint64
+™ hspint64
 
-â–  å…è²¬äº‹é …
+¡ –ÆÓŽ–€
 
-ãƒ»æœ¬ã‚½ãƒ•ãƒˆã¯ç„¡æ–™ã§ä½¿ã†ã“ã¨ãŒã§ãã¾ã™
-ãƒ»ä»˜å±žã®ã‚½ãƒ¼ã‚¹ã‚³ãƒ¼ãƒ‰ã®ãƒ©ã‚¤ã‚»ãƒ³ã‚¹ã¯OpenHSPã®ãƒ©ã‚¤ã‚»ãƒ³ã‚¹ã«æº–æ‹ ã—ã¾ã™
-ãƒ»æœ¬ã‚½ãƒ•ãƒˆã‚’åˆ©ç”¨ã—ãŸäº‹ã«ã‚ˆã‚‹ã„ã‹ãªã‚‹æå®³ã‚‚ä½œè€…ã¯ä¸€åˆ‡ã®è²¬ä»»ã‚’è² ã„ã¾ã›ã‚“
-ãƒ»é…å¸ƒã€è»¢è¼‰ã€æ”¹é€ ã¯ç„¡æ–­ã‹ã¤è‡ªç”±ã«ã—ã¦æ§‹ã„ã¾ã›ã‚“ï¼ˆå¤§æ­“è¿Žï¼‰
-ãƒ»è¿½è¨˜ãƒ»æ–°è¦è¿½åŠ ã—ãŸã‚½ãƒ¼ã‚¹ã‚³ãƒ¼ãƒ‰æ±šãã¦ã”ã‚ã‚“ãªã•ã„
-ãƒ»ãŸã¶ã‚“ãƒã‚°ãŒã‚ã‚Šã¾ã™ã€‚è¨ˆ5æ™‚é–“ãã‚‰ã„ã§ä½œã£ãŸã®ã§ã€‚ã†ã‚“ã€‚
+E–{ƒ\ƒtƒg‚Í–³—¿‚ÅŽg‚¤‚±‚Æ‚ª‚Å‚«‚Ü‚·
+E•t‘®‚Ìƒ\[ƒXƒR[ƒh‚Ìƒ‰ƒCƒZƒ“ƒX‚ÍOpenHSP‚Ìƒ‰ƒCƒZƒ“ƒX‚É€‹’‚µ‚Ü‚·
+E–{ƒ\ƒtƒg‚ð—˜—p‚µ‚½Ž–‚É‚æ‚é‚¢‚©‚È‚é‘¹ŠQ‚àìŽÒ‚ÍˆêØ‚ÌÓ”C‚ð•‰‚¢‚Ü‚¹‚ñ
+E”z•zA“]ÚA‰ü‘¢‚Í–³’f‚©‚ÂŽ©—R‚É‚µ‚Ä\‚¢‚Ü‚¹‚ñi‘åŠ½Œ}j
+E’Ç‹LEV‹K’Ç‰Á‚µ‚½ƒ\[ƒXƒR[ƒh‰˜‚­‚Ä‚²‚ß‚ñ‚È‚³‚¢
+E‚½‚Ô‚ñƒoƒO‚ª‚ ‚è‚Ü‚·B
 
-â–  å¯¾å¿œæ©Ÿèƒ½
+¡ ‘Î‰ž‹@”\
 
 int()
 lpeek()
@@ -18,22 +18,28 @@ varptr()
 dupptr()
 callfunc()
 
-ã®64bitå¯¾å¿œç‰ˆ
+‚Ì‚È‚Ç‚Ì64bit‘Î‰ž”Å
 
-â–  é€£çµ¡å…ˆ 
+¡ ˜A—æ 
 
-ã‚¤ãƒŽãƒ“ã‚¢(inovia)
-http://twitter.com/hk1v
-http://hsp.moe/
+ƒCƒmƒrƒA(inovia)
+https://twitter.com/hk1v
+https://hsp.moe/
 
-â–  è¬è¾ž
+¡ ŽÓŽ«
 
-æœ¬ã‚½ãƒ•ãƒˆã¯ OpenHSP/HSP3SDK ã‚’ä½¿ç”¨ã—ã¦ãŠã‚Šã¾ã™ã€‚
+–{ƒ\ƒtƒg‚Í OpenHSP/HSP3SDK ‚ðŽg—p‚µ‚Ä‚¨‚è‚Ü‚·B
 http://www.onionsoft.net/hsp/openhsp/
 
-ä¸Šå¤§æ°ã®ã‚µã‚¤ãƒˆã‚’å‚è€ƒã«ã—ã¾ã—ãŸã€‚
+ã‘åŽ‚ÌƒTƒCƒg‚ðŽQl‚É‚µ‚Ü‚µ‚½B
 http://prograpark.ninja-web.net/HSP/index.html
 
-â–  ãƒãƒ¼ã‚¸ãƒ§ãƒ³
+¡ ƒo[ƒWƒ‡ƒ“
 
-ã€€ 3.5b2  - 1.00     - åˆæœŸãƒãƒ¼ã‚¸ãƒ§ãƒ³ï¼ˆè£½ä½œæ™‚é–“ï¼šè¨ˆ5æ™‚é–“ã»ã©ï¼‰
+@ 3.5b2  - 1.00     - ‰Šúƒo[ƒWƒ‡ƒ“i»ìŽžŠÔFŒv5ŽžŠÔ‚Ù‚Çj
+   3.6b4  - 1.01     - 
+E•s‹ï‡‚ÌC³
+E‰Â•Ï’·ˆø”Œ`Ž®‚Ìcallfunc•—ŠÖ”‚ð’Ç‰Á [cfunc64]
+@i”z—ñ‚Åˆø”ƒf[ƒ^‚ð“n‚³‚È‚¢‚Ì‚Å’¼Š´“Ij
+EfloatŒ^AUTF-16Œ^•Ï”Œ^‚ð’Ç‰Á
+@iWin32API‚âDXƒ‰ƒCƒuƒ‰ƒŠ‚ðˆµ‚¤Œü‚¯j
