@@ -8,6 +8,8 @@
 ・配布、転載、改造は無断かつ自由にして構いません（大歓迎）
 ・追記・新規追加したソースコード汚くてごめんなさい
 ・たぶんバグがあります。
+・hspint64のソースコードはgithubにて管理しています。
+https://github.com/inovia/HSPInt64
 
 ■ 対応機能
 
@@ -25,6 +27,7 @@ callfunc()
 イノビア(inovia)
 https://twitter.com/hk1v
 https://hsp.moe/
+https://github.com/inovia/
 
 ■ 謝辞
 
