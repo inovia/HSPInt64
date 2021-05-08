@@ -1,0 +1,15 @@
+// hsp3_64.as → hspint64.as の順にインクルードしてください。
+// また、varptr や callfunc をマクロで置き換えている都合上、
+// hspint64.as のインクルードは なるべく上に書いておくことをお勧めします。
+// なお、varptr や callfunc をマクロの置換をしない場合は、以下のコメントを解除してください。
+// #define CANCEL_UNDEF_HSPINT64 
+
+#include "hsp3_64.as"
+#include "hspint64.as"
+
+// strwinsert
+// Unicode(UTF-16)文字列内の指定したインデックスに文字列を挿入
+
+u16 =  _T("ABDE")       	
+mes strwinsert(u16, 2, "C")         // Cを入れ忘れた
+mes strwinsert(u16, 4, _T("FG"))    // FGを後ろに

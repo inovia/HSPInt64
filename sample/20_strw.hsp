@@ -1,0 +1,30 @@
+// hsp3_64.as → hspint64.as の順にインクルードしてください。
+// また、varptr や callfunc をマクロで置き換えている都合上、
+// hspint64.as のインクルードは なるべく上に書いておくことをお勧めします。
+// なお、varptr や callfunc をマクロの置換をしない場合は、以下のコメントを解除してください。
+// #define CANCEL_UNDEF_HSPINT64 
+
+#include "hsp3_64.as"
+#include "hspint64.as"
+
+// strw
+// Unicode文字列(UTF-16)型に変換
+
+// UTF-8 -> UTF-16 へ変換
+u16 = strw("ABCDE♨あいうえお")
+mes "UTF-16: " + u16
+
+// UTF-16 -> UTF-8 へ変換
+u8 = str(u16)
+mes "UTF-8:  " + u8
+
+// 標準命令に cnvstow もありますが、
+// mes で直接表示できないなど扱いにくいです。
+sdim buf, 1024
+cnvstow buf, "あいうえおABCDE♨"
+mes "ダメ: " + buf
+mes "ＯＫ: " + cnvwtos(buf)
+
+// こういう手法もあります
+dupptr64 buf2, varptr64(buf), 1024, vartype("strw")
+mes "こういう手法もある： " +  buf2

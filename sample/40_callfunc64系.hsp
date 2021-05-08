@@ -1,0 +1,43 @@
+// hsp3_64.as → hspint64.as の順にインクルードしてください。
+// また、varptr や callfunc をマクロで置き換えている都合上、
+// hspint64.as のインクルードは なるべく上に書いておくことをお勧めします。
+// なお、varptr や callfunc をマクロの置換をしない場合は、以下のコメントを解除してください。
+// #define CANCEL_UNDEF_HSPINT64 
+
+#include "hsp3_64.as"
+#include "hspint64.as"
+
+#uselib "user32.dll"
+#func MessageBoxA "MessageBoxA" int,int,int,int
+#func MessageBoxW "MessageBoxW" int,int,int,int
+#define MB_ICONINFORMATION $40
+#define MB_OK 0
+
+// ----------------------------------------------------------
+// callfunc64系
+// ----------------------------------------------------------
+// 戻り値の型によって使用する関数が違い、
+// int/int64 -> callfunc64i()
+// double    -> callfunc64d()
+// float     -> callfunc64f()
+// を使用します。
+
+// 以下は、MessageBoxW 関数を呼び出す例です。
+// 戻り値は int なので、 callfunc64i() を使用します。
+
+msg_str = _T("Hello HSP! ♨ Unicode!!")
+title_str = _T("タイトル文字列")
+
+dim64 prmData, 4
+prmData = int64(hwnd), varptr64(msg_str), varptr64(title_str), int64(MB_OK | MB_ICONINFORMATION)
+mes callfunc64i(prmData, varptr64(MessageBoxW), 4)
+
+// なお、 #define CANCEL_UNDEF_HSPINT64 のコメントアウトを解除していなければ、
+// callfunc を書いた場合でも、callfunc64i を自動的に呼び出します。
+
+msg_str = _T("メッセージ")
+title_str = _T("タイトル")
+
+dim64 prmData, 4
+prmData = int64(hwnd), varptr(msg_str), varptr(title_str), int64(MB_OK | MB_ICONINFORMATION)
+mes callfunc(prmData, varptr(MessageBoxW), 4)

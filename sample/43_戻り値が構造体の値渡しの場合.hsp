@@ -1,0 +1,51 @@
+// hsp3_64.as → hspint64.as の順にインクルードしてください。
+// また、varptr や callfunc をマクロで置き換えている都合上、
+// hspint64.as のインクルードは なるべく上に書いておくことをお勧めします。
+// なお、varptr や callfunc をマクロの置換をしない場合は、以下のコメントを解除してください。
+// #define CANCEL_UNDEF_HSPINT64 
+
+#include "hsp3_64.as"
+#include "hspint64.as"
+
+// ----------------------------------------------------------
+// 戻り値が構造体の値渡しの場合
+// ----------------------------------------------------------
+// Win32APIでは見たことがありませんが、DXライブラリなどは
+// 戻り値が構造体の値渡しになっているケースがあります。
+// その場合の呼び出し方の例です。
+// ※ Win32APIなどでよくある戻り値が構造体のポインタの場合は、cfunc64i64() の戻り値をdupptrなどで参照してください。
+// ----------------------------------------------------------
+
+// RECT構造体
+// typedef struct tagRECT
+// {
+//     LONG    left;
+//     LONG    top;
+//     LONG    right;
+//     LONG    bottom;
+// } RECT;
+
+// C言語関数
+// RECT Test_Ret_RECT(void)
+// {
+//     static RECT rc = { 0x12, 0x34, 0x56, 0x78 };
+//     return rc;
+// }
+
+#uselib "hspint64.dll"
+#func Test_Ret_RECT "Test_Ret_RECT"
+
+// hspint64.dll にテスト用の関数を用意しています。
+// Test_Ret_RECT 関数で、引数は 0 個で、
+// 戻り値がRECT構造体の値渡しになっています。
+// 
+// HSPから呼び出す際は、C言語側の定義では本来引数はありませんが、
+// HSP側で戻り値用の構造体のメモリを用意して第1引数にポインタを渡す必要があります。
+
+dim rect, 4
+cfunc64v Test_Ret_RECT, varptr(rect)
+
+mes strf("left   = 0x%02x", rect(0))
+mes strf("top    = 0x%02x", rect(1))
+mes strf("right  = 0x%02x", rect(2))
+mes strf("bottom = 0x%02x", rect(3))

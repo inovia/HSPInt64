@@ -1,0 +1,29 @@
+// hsp3_64.as → hspint64.as の順にインクルードしてください。
+// また、varptr や callfunc をマクロで置き換えている都合上、
+// hspint64.as のインクルードは なるべく上に書いておくことをお勧めします。
+// なお、varptr や callfunc をマクロの置換をしない場合は、以下のコメントを解除してください。
+// #define CANCEL_UNDEF_HSPINT64 
+
+#include "hsp3_64.as"
+#include "hspint64.as"
+
+// strwtrim
+// 指定した文字(Unicode(UTF-16))だけを取り除く
+
+// 例1
+a = _T(" ABC DEF ")
+b = strwtrim( a, 0, ' ')
+mes b
+
+// 例2
+a = _T("@*ABC@*DEF@*")
+// b = strwtrim( a, 0, "@*")    // こっちでも可
+b = strwtrim( a, 0, _T("@*"))   // 両端のみ除去
+mes b
+
+// 例3
+s = _T("　こんにちは　全角文字です　")
+zenspace = _T("　")	                ; 全角スペース
+code = wpeek( zenspace, 0)          ; 全角スペースのコードを取得
+mes strwtrim( s, 3, code)           ; 文字コード版
+mes strwtrim( s, 3, zenspace )		; 文字列版（同じ結果になります）

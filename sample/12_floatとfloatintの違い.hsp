@@ -1,0 +1,67 @@
+// hsp3_64.as → hspint64.as の順にインクルードしてください。
+// また、varptr や callfunc をマクロで置き換えている都合上、
+// hspint64.as のインクルードは なるべく上に書いておくことをお勧めします。
+// なお、varptr や callfunc をマクロの置換をしない場合は、以下のコメントを解除してください。
+// #define CANCEL_UNDEF_HSPINT64 
+
+#include "hsp3_64.as"
+#include "hspint64.as"
+
+;
+; float for HSP モジュール
+; http://spn.php.xdomain.jp/hsp_koneta3.htm#tofloat
+;
+
+#module
+#defcfunc todouble int p1
+	temp = 0.0
+	lpoke temp, 4, (p1 & 0x80000000) | (((p1 & 0x7fffffff) >> 3) + ((p1 & 0x7fffffff) ! 0) * 0x38000000)
+	lpoke temp, 0, p1 << 29
+	return temp
+
+#defcfunc tofloat double p1
+	temp = p1
+	return lpeek(temp)>>29&7|(p1<0)<<31|lpeek(temp,4)-(p1!0)*0x38000000<<3
+
+#define global ctype	fadd(%1, %2)	tofloat(todouble(%1) + todouble(%2))
+#define global ctype	fsub(%1, %2)	tofloat(todouble(%1) - todouble(%2))
+#define global ctype	fmul(%1, %2)	tofloat(todouble(%1) * todouble(%2))
+#define global ctype	fdiv(%1, %2)	tofloat(todouble(%1) / todouble(%2))
+#define global ctype	fneg(%1)	((%1) ^ 0x80000000)
+#global
+
+// floatとfloatintの違いについて
+
+// float型はプラグインによって拡張された変数の型です。
+// float値のまま、四則演算を行ったり、mes で表示することができます。
+
+f = float(1.0)
+mes "float の値 = " + f
+
+f1 = float(10.0)
+f2 = float(20.0)
+mes "f1 = " + f1
+mes "f2 = " + f2
+mes "f1 + f2 = " + (f1 + f2)
+mes ""
+
+// 一方、floatint型はint型変数にfloat値を強制格納する方式であり、
+// プラグインなしで利用することができます。(floatintという型はなく、int型です）
+// しかし、利用場面によっては煩雑だったり、意図した値が取れない場合があります。
+// 例えば mes で表示する場合などです。
+
+// float -> str 変換
+// mes 命令では、int型 だと思っているので、意図した値にならない。
+fi = tofloat(1.00)
+mes "floatint の値(おかしい例) = " + fi
+
+// float -> double -> str 変換
+// todouble() を挟めば意図した値になりますが、double 型への変換が入ります。
+// また、四則演算もできますが、直感的ではありません。
+mes "floatint の値 = " + todouble(fi)
+
+fi1 = tofloat(10.0)
+fi2 = tofloat(20.0)
+mes "fi1 = " + todouble(fi1)
+mes "fi2 = " + todouble(fi2)
+mes "fi1 + fi2 = " + todouble( fadd( fi1, fi2))

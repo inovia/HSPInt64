@@ -1,0 +1,41 @@
+// hsp3_64.as → hspint64.as の順にインクルードしてください。
+// また、varptr や callfunc をマクロで置き換えている都合上、
+// hspint64.as のインクルードは なるべく上に書いておくことをお勧めします。
+// なお、varptr や callfunc をマクロの置換をしない場合は、以下のコメントを解除してください。
+// #define CANCEL_UNDEF_HSPINT64 
+
+#include "hsp3_64.as"
+#include "hspint64.as"
+
+#uselib "user32.dll"
+#func WindowFromPoint "WindowFromPoint" int, int
+
+// ----------------------------------------------------------
+// 引数が構造体の値渡しの場合
+// ----------------------------------------------------------
+// WindowFromPoint 関数の引数はPOINT構造体ですが、
+// ポインタではなく値渡しになっています。
+// ポインタであれば、varptr64() または varptr() を使用しますが、
+// 値渡しの場合は、呼び方を工夫しないといけません。
+// ----------------------------------------------------------
+
+title "マウスカーソル下のウィンドウハンドルを表示します"
+
+repeat
+    // 画面消去
+    pos 0,0 : color 255,255,255 : boxf : color
+    
+    // 32bit版だと引数が2つ分割されますが、
+    // 64bit版の場合はPOINT構造体が64bit(32 + 32)で収まるので、1つの引数として渡します。
+    ; pt = int64(0)
+    ; lpoke pt, 0, ginfo_mx
+    ; lpoke pt, 4, ginfo_my
+    pt = int64(ginfo_mx) | int64(ginfo_my) << 32
+
+    mes "HWND -> " + cfunc64( RET_INT64, WindowFromPoint, pt)
+    
+    // 下記は失敗します 
+    // mes "HWND -> " + cfunc64( RET_INT64, WindowFromPoint, ginfo_mx, ginfo_my)
+
+    wait 12
+loop

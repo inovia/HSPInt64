@@ -1,0 +1,60 @@
+// hsp3_64.as → hspint64.as の順にインクルードしてください。
+// また、varptr や callfunc をマクロで置き換えている都合上、
+// hspint64.as のインクルードは なるべく上に書いておくことをお勧めします。
+// なお、varptr や callfunc をマクロの置換をしない場合は、以下のコメントを解除してください。
+// #define CANCEL_UNDEF_HSPINT64 
+
+#include "hsp3_64.as"
+#include "hspint64.as"
+
+#uselib "user32.dll"
+#func MessageBoxA "MessageBoxA" int,int,int,int
+#func MessageBoxW "MessageBoxW" int,int,int,int
+#define MB_ICONINFORMATION $40
+#define MB_OK 0
+
+#uselib "kernel32.dll"
+#func GetModuleFileNameW "GetModuleFileNameW" sptr,wstr,int
+
+// ----------------------------------------------------------
+// cfunc64系
+// ----------------------------------------------------------
+// callfunc64関数と違い、引数の情報を配列で格納する必要がありません。
+// 可変長引数として、直接指定することが可能です。
+// 
+// cfunc64関数が基本ですが、派生として以下の関数・命令があります。
+// cfunc64関数では戻り値の型の指定を引数で指定するのに対し、
+// 以下の関数は、戻り値が予め固定された専用関数です。(引数も１つ少ないです)
+// 
+// cfunc64v   命令（戻り値：void 型）
+// cfunc64i   関数（戻り値：int型）
+// cfunc64i64 関数（戻り値：int64型）
+// cfunc64d   関数（戻り値：double型）
+// cfunc64f   関数（戻り値：float型）
+// cfunc64fi  関数（戻り値：float値をint型変数にキャスト）
+// cfunc64s   関数（戻り値：文字列型）
+// cfunc64sw  関数（戻り値：Unicode文字列型(UTF-16)）
+// ----------------------------------------------------------
+
+// ----------------------------------------------------------
+// 以下は、MessageBoxW 関数を呼び出す例です。
+// 戻り値は int なので、 RET_INT を指定します。
+
+msg_str = _T("Hello HSP! ♨ Unicode!!")
+title_str = _T("タイトル文字列")
+
+mes cfunc64( RET_INT, varptr64(MessageBoxW), hwnd, msg_str, title_str, MB_OK | MB_ICONINFORMATION)
+
+// cfunc64の第2引数は #func, #cfunc の関数名を直接指定もできます
+mes cfunc64( RET_INT, MessageBoxW, hwnd, msg_str, title_str, MB_OK | MB_ICONINFORMATION)
+
+// cfunc64i()を使う場合は、引数が1つ少なくなります。
+mes cfunc64i( MessageBoxW, hwnd, msg_str, title_str, MB_OK | MB_ICONINFORMATION)
+
+// ----------------------------------------------------------
+// GetModuleFileNameW 関数を呼び出す例です。
+// 戻り値は本来 int なのですが、戻り値を無視したい用途で cfunc64v を使うことも可能です。
+
+swdim buf, 2048                                                 ; Byte数
+cfunc64v GetModuleFileNameW, 0, varptr(buf), 2048 / 2           ; 文字数
+mes buf

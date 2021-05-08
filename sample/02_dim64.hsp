@@ -1,0 +1,34 @@
+// hsp3_64.as → hspint64.as の順にインクルードしてください。
+// また、varptr や callfunc をマクロで置き換えている都合上、
+// hspint64.as のインクルードは なるべく上に書いておくことをお勧めします。
+// なお、varptr や callfunc をマクロの置換をしない場合は、以下のコメントを解除してください。
+// #define CANCEL_UNDEF_HSPINT64 
+
+#include "hsp3_64.as"
+#include "hspint64.as"
+
+// dim64
+// int64型の配列変数を作成します
+
+dim64 i64, 16
+mes "要素数" + length(i64)
+
+repeat length(i64)
+    i64(cnt) = int64("2147483647") + cnt 
+loop
+
+repeat length(i64)
+    mes i64(cnt)
+loop
+
+// dimtype でも同じことができます
+dimtype i64_2, vartype("int64"), 4
+mes "要素数" + length(i64_2)
+
+repeat length(i64_2)
+    i64_2(cnt) = int64("-2147483648") - cnt 
+loop
+
+repeat length(i64_2)
+    mes i64_2(cnt)
+loop

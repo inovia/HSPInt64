@@ -1,0 +1,27 @@
+// hsp3_64.as → hspint64.as の順にインクルードしてください。
+// また、varptr や callfunc をマクロで置き換えている都合上、
+// hspint64.as のインクルードは なるべく上に書いておくことをお勧めします。
+// なお、varptr や callfunc をマクロの置換をしない場合は、以下のコメントを解除してください。
+// #define CANCEL_UNDEF_HSPINT64 
+
+#include "hsp3_64.as"
+#include "hspint64.as"
+
+// float
+// float値に変換します。
+
+mes "double: " + 1.00000000
+mes "float: " + float("1.00000000")
+mes "float: " + float(1.00000000)
+
+// float値の演算
+a = float(1.00000000)
+b = float(2.00000000)
+
+mes "a = " + a
+mes "b = " + b
+
+mes "a + b = " + (a + b)
+mes "b - a = " + (b - a)
+mes "a * b = " + (a * b)
+mes "a / b = " + (a / b)

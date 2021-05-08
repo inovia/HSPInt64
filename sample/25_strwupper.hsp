@@ -1,0 +1,14 @@
+// hsp3_64.as → hspint64.as の順にインクルードしてください。
+// また、varptr や callfunc をマクロで置き換えている都合上、
+// hspint64.as のインクルードは なるべく上に書いておくことをお勧めします。
+// なお、varptr や callfunc をマクロの置換をしない場合は、以下のコメントを解除してください。
+// #define CANCEL_UNDEF_HSPINT64 
+
+#include "hsp3_64.as"
+#include "hspint64.as"
+
+// strwupper
+// Unicode(UTF-16)文字列を大文字に変換をします
+
+buf = _T("AbCdEfGhあいうえお")
+mes "大文字化: " + strwupper(buf)

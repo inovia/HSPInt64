@@ -1,0 +1,23 @@
+// hsp3_64.as → hspint64.as の順にインクルードしてください。
+// また、varptr や callfunc をマクロで置き換えている都合上、
+// hspint64.as のインクルードは なるべく上に書いておくことをお勧めします。
+// なお、varptr や callfunc をマクロの置換をしない場合は、以下のコメントを解除してください。
+// #define CANCEL_UNDEF_HSPINT64 
+
+#include "hsp3_64.as"
+#include "hspint64.as"
+
+// int64()
+// 文字列または数値からint64型へ変換します。
+
+mes int64(123)
+mes int64(456.789)
+
+mes int64("2147483648")
+mes int64("9223372036854775807")
+mes int64("10000000000") + int64("10000000000")
+
+// 16進数にも対応
+mes int64("0x1234567890ABCDEF")
+mes int64("$FEDCBA0987654321")
+mes int64("$FFFFFFFFFFFFFFFF")

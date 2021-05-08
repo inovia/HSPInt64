@@ -1,0 +1,20 @@
+// hsp3_64.as → hspint64.as の順にインクルードしてください。
+// また、varptr や callfunc をマクロで置き換えている都合上、
+// hspint64.as のインクルードは なるべく上に書いておくことをお勧めします。
+// なお、varptr や callfunc をマクロの置換をしない場合は、以下のコメントを解除してください。
+// #define CANCEL_UNDEF_HSPINT64 
+
+#include "hsp3_64.as"
+#include "hspint64.as"
+
+// instrw
+// Unicode(UTF-16)文字列の検索をします
+
+buf = _T("あいうえお♨ABCDE♨")
+mes "検索文字列: " + buf
+
+; 以下でも大丈夫です。
+; nPos = instrw( buf, 0, _T(♨))
+nPos = instrw( buf, 0, _T("♨"))
+
+mes "♨の位置: " + nPos + "文字目"

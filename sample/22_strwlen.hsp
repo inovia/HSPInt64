@@ -1,0 +1,29 @@
+// hsp3_64.as → hspint64.as の順にインクルードしてください。
+// また、varptr や callfunc をマクロで置き換えている都合上、
+// hspint64.as のインクルードは なるべく上に書いておくことをお勧めします。
+// なお、varptr や callfunc をマクロの置換をしない場合は、以下のコメントを解除してください。
+// #define CANCEL_UNDEF_HSPINT64 
+
+#include "hsp3_64.as"
+#include "hspint64.as"
+
+// strwlen
+// Unicode(UTF-16)文字列の長さを調べます
+
+// UTF-8 -> UTF-16 へ変換
+u16 = strw("ABCDE♨あいうえお")
+mes "UTF-16: " + u16
+
+; UTF-16は1文字2byte (※ サロゲートペアは除く)
+mes "文字数: " + strwlen(u16)
+mes "byte数: " + (strwlen(u16) * 2)
+mes ""
+
+// UTF-16 -> UTF-8 へ変換
+u8 = str(u16)
+mes "UTF-8:  " + u8
+
+; UTF-8は1文字が1～4byteなので、文字数が簡単にはわからない
+mes "byte数: " + strlen(u8)
+
+

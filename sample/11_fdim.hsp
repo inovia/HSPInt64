@@ -1,0 +1,34 @@
+// hsp3_64.as → hspint64.as の順にインクルードしてください。
+// また、varptr や callfunc をマクロで置き換えている都合上、
+// hspint64.as のインクルードは なるべく上に書いておくことをお勧めします。
+// なお、varptr や callfunc をマクロの置換をしない場合は、以下のコメントを解除してください。
+// #define CANCEL_UNDEF_HSPINT64 
+
+#include "hsp3_64.as"
+#include "hspint64.as"
+
+// fdim
+// float型の配列変数を作成します
+
+fdim fArray, 16
+mes "要素数" + length(fArray)
+
+repeat length(fArray)
+    fArray(cnt) = float(1.0) + cnt 
+loop
+
+repeat length(fArray)
+    mes fArray(cnt)
+loop
+
+// dimtype でも同じことができます
+dimtype fArray_2, vartype("float"), 4
+mes "要素数" + length(fArray_2)
+
+repeat length(fArray_2)
+    fArray_2(cnt) = float(1.0) - cnt 
+loop
+
+repeat length(fArray_2)
+    mes fArray_2(cnt)
+loop

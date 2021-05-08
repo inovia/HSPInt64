@@ -1,0 +1,28 @@
+// hsp3_64.as → hspint64.as の順にインクルードしてください。
+// また、varptr や callfunc をマクロで置き換えている都合上、
+// hspint64.as のインクルードは なるべく上に書いておくことをお勧めします。
+// なお、varptr や callfunc をマクロの置換をしない場合は、以下のコメントを解除してください。
+// #define CANCEL_UNDEF_HSPINT64 
+
+#include "hsp3_64.as"
+#include "hspint64.as"
+
+// dupptr64
+// ポインタ(64bit)からクローン変数を作成します
+
+sdim buf, 64
+buf = "ABCDEFG"
+
+// ポインタ経由でクローンの作成
+dupptr64 cloneBuf, varptr64(buf), 64, vartype("str")
+
+mes "元: " + buf
+mes "クローン: " + cloneBuf
+
+// なお、 #define CANCEL_UNDEF_HSPINT64 のコメントアウトを解除していなければ、
+// dupptr を書いた場合でも、dupptr64 を自動的に呼び出します。
+
+dupptr cloneBuf, varptr(buf), 64, vartype("str")
+
+mes "元: " + buf
+mes "クローン: " + cloneBuf

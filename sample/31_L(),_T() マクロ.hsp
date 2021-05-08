@@ -1,0 +1,27 @@
+// hsp3_64.as → hspint64.as の順にインクルードしてください。
+// また、varptr や callfunc をマクロで置き換えている都合上、
+// hspint64.as のインクルードは なるべく上に書いておくことをお勧めします。
+// なお、varptr や callfunc をマクロの置換をしない場合は、以下のコメントを解除してください。
+// #define CANCEL_UNDEF_HSPINT64 
+
+#include "hsp3_64.as"
+#include "hspint64.as"
+
+// _T(), L() マクロ
+
+#ifdef __hsp64__
+
+// 基本的には、strw のマクロです。
+mes strw("ABCDEF UTF-16")
+mes _T("ABCDEF UTF-16")
+mes L("ABCDEF UTF-16")
+
+#else
+
+// まだ存在していませんが、
+// 32bit版（標準ランタイム）の時は解釈の仕方が変わる予定です。
+mes strw("ABCDEF UTF-16")
+mes _T("ABCDEF Shift_JIS or UTF-8")  // これのみ、Shift_JISとして扱います。UTF-8ランタイム版であれば、UTF-8です。
+mes L("ABCDEF UTF-16")
+
+#endif

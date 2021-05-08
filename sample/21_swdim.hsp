@@ -1,0 +1,39 @@
+// hsp3_64.as → hspint64.as の順にインクルードしてください。
+// また、varptr や callfunc をマクロで置き換えている都合上、
+// hspint64.as のインクルードは なるべく上に書いておくことをお勧めします。
+// なお、varptr や callfunc をマクロの置換をしない場合は、以下のコメントを解除してください。
+// #define CANCEL_UNDEF_HSPINT64 
+
+#include "hsp3_64.as"
+#include "hspint64.as"
+
+// swdim
+// Unicode文字列(UTF-16)型配列変数を作成します
+
+swdim wstr, 1024, 16
+mes "要素数" + length(wstr)
+
+repeat length(wstr)
+
+    ; 注意！
+    ; wstr(cnt) = cnt
+    ; wstr(cnt) = "" + cnt
+    ; と記述すると、配列が数値型や文字列型(UTF-8)に変換されてしまいます
+    wstr(cnt) = _T(cnt)
+loop
+
+repeat length(wstr)
+    mes wstr(cnt)
+loop
+
+// dimtype でも同じことができます
+dimtype wstr_2, vartype("strw"), 4
+mes "要素数" + length(wstr)
+
+repeat length(wstr_2)
+    wstr_2(cnt) = _T("♡の数 " + cnt)
+loop
+
+repeat length(wstr_2)
+    mes wstr_2(cnt)
+loop

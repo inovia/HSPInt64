@@ -1,0 +1,23 @@
+// hsp3_64.as → hspint64.as の順にインクルードしてください。
+// また、varptr や callfunc をマクロで置き換えている都合上、
+// hspint64.as のインクルードは なるべく上に書いておくことをお勧めします。
+// なお、varptr や callfunc をマクロの置換をしない場合は、以下のコメントを解除してください。
+// #define CANCEL_UNDEF_HSPINT64 
+
+#include "hsp3_64.as"
+#include "hspint64.as"
+
+// qpeek、qpoke
+// 8バイト単位のデータの読み書きを行います
+
+sdim buf, 64
+qpoke buf, 0, int64("9223372036854775807")
+mes "qpeek: " + qpeek(buf, 0)
+
+// これでも動きます。
+// 文字列型を渡した場合は、int64へ自動変換します。
+qpoke buf, 0, "9223372036854775807"
+mes "qpeek: " + qpeek(buf, 0)
+
+qpoke buf, 0, "0xFFFFFFFFFFFFFFFF"
+mes "qpeek: " + qpeek(buf, 0)
