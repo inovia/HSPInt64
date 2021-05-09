@@ -25,6 +25,7 @@
 #cmd strwlower $14
 #cmd strwinsert $15
 #cmd strwcomp $16
+#cmd libptr64 $17
 
 #cmd cfunc64v $100
 #cmd cfunc64i $101
@@ -57,7 +58,9 @@
 #undef varptr@hsp
 #undef callfunc@hsp
 #undef dupptr@hsp
+#undef libptr@hsp
 #define global varptr@hsp varptr64
 #define global callfunc@hsp callfunc64i
 #define global dupptr@hsp dupptr64
+#define global libptr@hsp libptr64
 #endif

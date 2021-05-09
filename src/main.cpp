@@ -127,7 +127,7 @@ static void *reffunc( int *type_res, int cmd )
 			puterror(HSPERR_ILLEGAL_FUNCTION);
 		}
 
-		ref_int64val = *(INT64 *)(pdat + p1);
+		ref_int64val = *(INT64*)((char *)pdat + p1);
 		ref_type = RET_TYPE::Int64;
 		break;
 	}
@@ -619,6 +619,33 @@ static void *reffunc( int *type_res, int cmd )
 		ref_type = RET_TYPE::Int;
 		break;
 	}
+	case 0x17:								// libptr64ŠÖ”
+	{
+		//LIBDAT *lib;
+		int p1;
+		STRUCTDAT *st;
+		switch (*type) {
+		case TYPE_DLLFUNC:
+		case TYPE_MODCMD:
+			p1 = *val;
+			break;
+		case TYPE_DLLCTRL:
+			p1 = *val;
+			if (p1 >= TYPE_OFFSET_COMOBJ) {
+				p1 -= TYPE_OFFSET_COMOBJ;
+				break;
+			}
+		default:
+			throw (HSPERR_TYPE_MISMATCH);
+		}
+		code_next();
+		
+		st = &(ctx->mem_finfo[p1]);
+		ref_int64val = ((INT_PTR)st);
+		ref_type = RET_TYPE::Int64;
+
+		break;
+	}
 	default:
 		puterror( HSPERR_UNSUPPORTED_FUNCTION );
 	}
@@ -688,8 +715,17 @@ static int cmdfunc(int cmd)
 	case 0x02:								// qpoke
 	{
 		PVal *pval;
-		APTR aptr = code_getva(&pval);
-		int size = pval->size;
+		APTR aptr;
+
+		aptr = code_getva(&pval);
+
+		HspVarProc *phvp;
+		phvp = exinfo->HspFunc_getproc(pval->flag);
+		PDAT* pdat = phvp->GetPtr(pval);
+
+		int size;
+		phvp->GetBlockSize(pval, pdat, &size);
+
 		int p1 = code_geti();
 
 		if (p1<0) throw HSPERR_BUFFER_OVERFLOW;
@@ -843,6 +879,7 @@ EXPORT void WINAPI hsp3cmdinit( HSP3TYPEINFO *info )
 	registvar( -1, HspVarInt64_Init );		// V‚µ‚¢Œ^‚Ì’Ç‰Á
 	registvar( -1, HspVarFloat_Init );		// V‚µ‚¢Œ^‚Ì’Ç‰Á
 	registvar( -1, HspVarStrW_Init);		// V‚µ‚¢Œ^‚Ì’Ç‰Á
+
 }
 
 /*------------------------------------------------------------*/

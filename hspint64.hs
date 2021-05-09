@@ -155,7 +155,7 @@ p1 : ポインタを調べる変数、または命令
 %inst
 ; 解説文 を記入
 varptr関数の64bit対応版です。
-なお、hspint64.as をインクルードした場合は、既存のvarptr関数は、varptr64命令に置き換えられています。
+なお、hspint64.as をインクルードした場合は、既存のvarptr関数は、varptr64関数に置き換えられています。
 
 p1で指定された変数が格納しているデータがあるメモリアドレス(64bit値)を返します。
 p1に外部拡張命令(#func,#cfuncで定義されているDLL呼び出し用の命令/関数)を指定した場合には、実際に実行される外部関数のアドレスを返します。
@@ -191,7 +191,7 @@ p3=1～(4) : クローン変数の型指定
 %inst
 ; 解説文 を記入
 dupptr関数の64bit対応版です。
-なお、hspint64.as をインクルードした場合は、既存のdupptr関数は、dupptr64命令に置き換えられています。
+なお、hspint64.as をインクルードした場合は、既存のdupptr関数は、dupptr64関数に置き換えられています。
 
 指定したアドレスポインタ(64bit)を指している変数を作成します。
 クローン変数は、メモリ上の情報を参照するための数値型配列変数として機能するようになります。
@@ -232,7 +232,7 @@ p3 : パラメーター数
 %inst
 ; 解説文 を記入
 callfunc関数の64bit対応版です。
-なお、hspint64.as をインクルードした場合は、既存のcallfunc関数は、callfunc64命令に置き換えられています。
+なお、hspint64.as をインクルードした場合は、既存のcallfunc関数は、callfunc64i関数に置き換えられています。
 同様な関数に可変長引数版のcfunc64もあります（こちらを推奨）。
 
 p2で指定されているアドレス(64bit)をネイティブな関数として呼び出します。
@@ -694,7 +694,7 @@ cnvwtos
 
 %group
 ; グループ を記入
-wstr
+strw
 %index
 swdim
 ; 見出し を記入
@@ -989,7 +989,7 @@ mes strwlower( _T("AbCdEfGh") )
 %href
 ; 関連項目 を記入
 strw
-strupper
+strwupper
 
 %group
 ; グループ を記入
@@ -1622,7 +1622,7 @@ _T
 
 %group
 ; グループ を記入
-wstr
+strw
 %index
 _T
 ; 見出し を記入
@@ -1659,4 +1659,76 @@ L
 
 %group
 ; グループ を記入
-wstr
+strw
+%index
+libptr64
+; 見出し を記入
+外部呼出しコマンドの情報アドレス(64bit)を得る
+
+%prm
+; パラメータリスト を記入
+; パラメータ説明文 を記入
+(p1)
+p1 : アドレスを調べるコマンド
+
+%inst
+; 解説文 を記入
+libptr関数の64bit対応版です。
+なお、hspint64.as をインクルードした場合は、既存のlibptr関数は、libptr64関数に置き換えられています。
+
+p1に指定したコマンドの情報アドレスを取得して整数値として返します。
+外部DLL呼び出しコマンドや関数をパラメーターとして指定することで、コマンドに関する情報が格納されているSTRUCTDAT構造体のアドレスを取得することができます。
+STRUCTDAT構造体は、HSPSDK内で以下のように定義されています。
+^p
+	typedef struct STRUCTDAT {
+	short	index;           // base LIBDAT index
+	short	subid;           // struct index
+	int	prmindex;            // STRUCTPRM index(MINFO)
+	int	prmmax;              // number of STRUCTPRM
+	int	nameidx;             // name index (DS)
+	int	size;                // struct size (stack)
+	int	otindex;             // OT index(Module)  / cleanup flag(Dll)
+	union {
+		void	*proc;       // proc address
+		int	funcflag;        // function flags(Module)
+	};
+	} STRUCTDAT;
+^p
+p1にCOM呼び出しコマンドやユーザー定義命令、 ユーザー定義関数を指定した場合も同様にSTRUCTDAT構造体のアドレスが取得されます。
+libptr関数は、HSPが使用している内部データへのアクセスを補助するもので、ここで扱う情報の内容について十分な知識を持った上で使用するようにしてください。
+通常の使用範囲では、この関数を利用したり覚えておく必要はありません。
+^
+STRUCTDAT構造体を参照することで、 外部呼出しDLLのアドレスや、DLLハンドルなどの情報を得ることが可能です。
+
+%sample
+
+; サンプルスクリプト を記入
+#include"hsp3_64.as"
+#include "hspint64.as"
+
+#uselib "user32.dll"
+#func MessageBoxA "MessageBoxA" int,sptr,sptr,int
+
+ladr=libptr64( MessageBoxA )
+dupptr lptr,ladr,32	; STRUCTDAT構造体を取得
+lib_id=wpeek(lptr,0)
+mes "LIB#"+lib_id
+mref hspctx,68
+linf_adr=qpeek( hspctx, 1352 )
+dupptr linf,linf_adr + lib_id*20,20	; LIBDAT構造体を取得
+dll_flag = linf(0)
+dll_name = linf(1)
+dll_handle = qpeek(linf, 8)
+mes "FLAG("+dll_flag+") NAME_ID#"+dll_name
+mes "HANDLE="+strf("%I64x",dll_handle)
+stop
+
+%href
+; 関連項目 を記入
+varptr64
+dupptr64
+
+%group
+; グループ を記入
+int64
+

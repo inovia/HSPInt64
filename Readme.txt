@@ -46,3 +46,6 @@ http://prograpark.ninja-web.net/HSP/index.html
 　（配列で引数データを渡さないので直感的）
 ・float型、UTF-16型変数型を追加
 　（Win32APIやDXライブラリを扱う向け）
+   3.6b4  - 1.02     - 
+・qpeek,qpokeの不具合修正
+・libptr64関数追加

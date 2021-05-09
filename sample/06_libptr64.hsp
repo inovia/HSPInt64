@@ -1,0 +1,27 @@
+// hsp3_64.as → hspint64.as の順にインクルードしてください。
+// また、varptr や callfunc をマクロで置き換えている都合上、
+// hspint64.as のインクルードは なるべく上に書いておくことをお勧めします。
+// なお、varptr や callfunc をマクロの置換をしない場合は、以下のコメントを解除してください。
+// #define CANCEL_UNDEF_HSPINT64 
+
+#include "hsp3_64.as"
+#include "hspint64.as"
+
+// libptr64
+// 外部呼出しコマンドの情報アドレス(64bit)を取得します
+
+#uselib "user32.dll"
+#func MessageBoxA "MessageBoxA" int,sptr,sptr,int
+
+ladr=libptr64( MessageBoxA )
+dupptr lptr,ladr,32	; STRUCTDAT構造体を取得
+lib_id=wpeek(lptr,0)
+mes "LIB#"+lib_id
+mref hspctx,68
+linf_adr=qpeek( hspctx, 1352 )
+dupptr linf,linf_adr + lib_id*20,20	; LIBDAT構造体を取得
+dll_flag = linf(0)
+dll_name = linf(1)
+dll_handle = qpeek(linf, 8)
+mes "FLAG("+dll_flag+") NAME_ID#"+dll_name
+mes "HANDLE="+strf("%I64x",dll_handle)
