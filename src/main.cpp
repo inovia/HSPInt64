@@ -18,6 +18,9 @@
 #include "hspvar_int64.h"
 #include "hspvar_float.h"
 #include "hspvar_strw.h"
+#include "hspvar_callback64.h"
+
+#include "callback64.h"
 
 // TODO: ごちゃごちゃしてきたので、整理予定
 
@@ -31,6 +34,7 @@ enum class RET_TYPE : int
 	FloatInt	= 4,		// float値をint型変数で返します
 	Str			= 5,		// 文字列型で返します
 	StrW		= 6,		// Unicode文字列型(UTF-16)で返します
+	Callback64	= 7,		// Callback64型で返します
 };
 
 // func形式で呼ぶ場合（cmd の最上位ビットをつけるだけ）
@@ -63,6 +67,7 @@ static void *reffunc( int *type_res, int cmd )
 	static float ref_floatval;
 	static CStringA ref_strval;
 	static CStringW ref_strwval;
+	PPCallbackData ref_ppCallback64 = nullptr;
 
 	// 戻り値の型
 	RET_TYPE ref_type;
@@ -646,6 +651,190 @@ static void *reffunc( int *type_res, int cmd )
 
 		break;
 	}
+	case 0x18:		// callback64_new 関数
+	{
+		int p1 = code_geti();					// 引数の数
+		unsigned short* p2 = code_getlb();		// ラベル
+		
+		ref_ppCallback64 = new PCallbackData();
+		*ref_ppCallback64 = callback64_new(p1);
+		(*ref_ppCallback64)->label = p2;
+		ref_type = RET_TYPE::Callback64;
+
+		break;
+	}
+	case 0x19:		// callback64_getptr 関数
+	{
+		int prm = code_getprm();							// 整数値を取得(デフォルトなし)
+		if ( prm <= PARAM_END)
+		{
+			puterror(HSPERR_NO_DEFAULT);
+		}
+
+		if ( mpval->flag != HspVarCallback64_typeid())		// Callback64のみしか不許可
+		{
+			puterror(HSPERR_INVALID_PARAMETER);
+		}
+
+		ref_int64val = (INT64)(*(PPCallbackData)mpval->pt)->proc_call;
+		ref_type = RET_TYPE::Int64;
+
+		break;
+	}
+	case 0x1A:		// callback64_getprm 関数
+	{
+		int prm = code_getprm();							
+		if ( prm <= PARAM_END)
+		{
+			puterror(HSPERR_NO_DEFAULT);
+		}
+
+		if ( mpval->flag != HspVarCallback64_typeid())		// Callback64のみしか不許可
+		{
+			puterror(HSPERR_INVALID_PARAMETER);
+		}
+
+		PCallbackData p1 = *(PPCallbackData)mpval->pt;				// 変数名
+		int p2 = code_geti();										// 引数のIndex
+		ref_type = (RET_TYPE)code_getdi( (int)RET_TYPE::Int64);		// 引数の型
+
+		if ( p2 < 0 || p1->args_count <= p2)
+		{
+			puterror(HSPERR_ARRAY_OVERFLOW);
+		}
+
+		switch (p2)
+		{
+			case 0:
+			{
+				if ( ref_type == RET_TYPE::Int64 || ref_type == RET_TYPE::Int )
+				{
+					ref_int64val = p1->rcx;
+				}
+				else if ( ref_type == RET_TYPE::Double )
+				{
+					ref_doubleval = p1->xmm0.val_d;
+				}
+				else if ( ref_type == RET_TYPE::Float || ref_type == RET_TYPE::FloatInt )
+				{
+					ref_floatval = p1->xmm0.val_d;
+				}
+				else if ( ref_type == RET_TYPE::Str )
+				{
+					ref_strval = (char *)p1->rcx;
+				}
+				else if ( ref_type == RET_TYPE::StrW )
+				{
+					ref_strwval = (wchar_t *)p1->rcx;
+				}
+
+				break;
+			}
+			case 1:
+			{
+				if (ref_type == RET_TYPE::Int64 || ref_type == RET_TYPE::Int)
+				{
+					ref_int64val = p1->rdx;
+				}
+				else if (ref_type == RET_TYPE::Double)
+				{
+					ref_doubleval = p1->xmm1.val_d;
+				}
+				else if (ref_type == RET_TYPE::Float || ref_type == RET_TYPE::FloatInt)
+				{
+					ref_floatval = p1->xmm1.val_d;
+				}
+				else if (ref_type == RET_TYPE::Str)
+				{
+					ref_strval = (char *)p1->rdx;
+				}
+				else if (ref_type == RET_TYPE::StrW)
+				{
+					ref_strwval = (wchar_t *)p1->rdx;
+				}
+
+				break;
+			}
+			case 2:
+			{
+				if (ref_type == RET_TYPE::Int64 || ref_type == RET_TYPE::Int)
+				{
+					ref_int64val = p1->r8;
+				}
+				else if (ref_type == RET_TYPE::Double)
+				{
+					ref_doubleval = p1->xmm2.val_d;
+				}
+				else if (ref_type == RET_TYPE::Float || ref_type == RET_TYPE::FloatInt)
+				{
+					ref_floatval = p1->xmm2.val_d;
+				}
+				else if (ref_type == RET_TYPE::Str)
+				{
+					ref_strval = (char *)p1->r8;
+				}
+				else if (ref_type == RET_TYPE::StrW)
+				{
+					ref_strwval = (wchar_t *)p1->r8;
+				}
+
+				break;
+			}
+			case 3:
+			{
+				if (ref_type == RET_TYPE::Int64 || ref_type == RET_TYPE::Int)
+				{
+					ref_int64val = p1->r9;
+				}
+				else if (ref_type == RET_TYPE::Double)
+				{
+					ref_doubleval = p1->xmm3.val_d;
+				}
+				else if (ref_type == RET_TYPE::Float || ref_type == RET_TYPE::FloatInt)
+				{
+					ref_floatval = p1->xmm3.val_d;
+				}
+				else if (ref_type == RET_TYPE::Str)
+				{
+					ref_strval = (char *)p1->r9;
+				}
+				else if (ref_type == RET_TYPE::StrW)
+				{
+					ref_strwval = (wchar_t *)p1->r9;
+				}
+
+				break;
+			}
+			default:
+			{
+				const auto& val = p1->args[4 - p2];
+
+				if (ref_type == RET_TYPE::Int64 || ref_type == RET_TYPE::Int)
+				{
+					ref_int64val = val;
+				}
+				else if (ref_type == RET_TYPE::Double)
+				{
+					ref_doubleval = *(double*)&val;
+				}
+				else if (ref_type == RET_TYPE::Float || ref_type == RET_TYPE::FloatInt)
+				{
+					ref_floatval = *(float*)&val;
+				}
+				else if (ref_type == RET_TYPE::Str)
+				{
+					ref_strval = *(char*)&val;
+				}
+				else if (ref_type == RET_TYPE::StrW)
+				{
+					ref_strwval = *(wchar_t*)&val;
+				}
+				break;
+			}
+		}
+
+		break;
+	}
 	default:
 		puterror( HSPERR_UNSUPPORTED_FUNCTION );
 	}
@@ -698,6 +887,9 @@ static void *reffunc( int *type_res, int cmd )
 			*type_res = HspVarStrW_typeid();
 			return (void *)ref_strwval.GetBuffer();
 
+		case RET_TYPE::Callback64:
+			*type_res = HspVarCallback64_typeid();
+			return (void *)ref_ppCallback64;
 		default:
 			break;
 		}
@@ -824,6 +1016,46 @@ static int cmdfunc(int cmd)
 
 		break;
 	}
+	case 0x1B:		// callback64_setret 関数
+	{
+		int prm = code_getprm();
+		if (prm <= PARAM_END)
+		{
+			puterror(HSPERR_NO_DEFAULT);
+		}
+
+		if ( mpval->flag != HspVarCallback64_typeid())		// Callback64のみしか不許可
+		{
+			puterror(HSPERR_INVALID_PARAMETER);
+		}
+
+		PCallbackData& p1 = *(PPCallbackData)mpval->pt;				// 変数名
+
+		prm = code_getprm();
+		if (prm <= PARAM_END)
+		{
+			puterror(HSPERR_NO_DEFAULT);
+		}
+
+		if ( mpval->flag == HSPVAR_FLAG_INT || mpval->flag == HspVarInt64_typeid())
+		{
+			p1->ret = *(INT64*)mpval->pt;
+		}
+		else if ( mpval->flag == HSPVAR_FLAG_DOUBLE)
+		{
+			p1->ret = *(INT64*)(double*)mpval->pt;
+		}
+		else if ( mpval->flag == HspVarFloat_typeid())
+		{
+			p1->ret = *(INT64*)(float*)mpval->pt;
+		}
+		else 
+		{
+			p1->ret = (INT64)mpval->pt;
+		}
+
+		break;
+	}
 	case 0x100:		// cfunc64v() 関数側に実装アリ
 	{
 		int type;
@@ -876,11 +1108,122 @@ EXPORT void WINAPI hsp3cmdinit( HSP3TYPEINFO *info )
 
 	sbInit();					// 可変メモリバッファ初期化
 
-	registvar( -1, HspVarInt64_Init );		// 新しい型の追加
-	registvar( -1, HspVarFloat_Init );		// 新しい型の追加
-	registvar( -1, HspVarStrW_Init);		// 新しい型の追加
-
+	registvar( -1, HspVarInt64_Init );			// 新しい型の追加
+	registvar( -1, HspVarFloat_Init );			// 新しい型の追加
+	registvar( -1, HspVarStrW_Init );			// 新しい型の追加
+	registvar( -1, HspVarCallback64_Init );		// 新しい型の追加
 }
 
 /*------------------------------------------------------------*/
+// TODO: 配列変数未対応
+// Debug文字列を書き換えたものを返します。
+// 本当は HSPランタイムの既存処理を直したいところ…
+// HSPVAR_SUPPORT_TOSTRING みたいなフラグを追加して、拡張プラグインからToStringした結果を返せるようしたい。
 
+EXPORT const char* WINAPI hsp3dbgvarinf( const HSP3DEBUG* pDebug, const char* inBuf, char *target, int option )
+{
+	// 出力バッファ
+	static CStringA outBuf;
+
+	// 不正
+	if ( pDebug == nullptr)
+	{
+		return nullptr;
+	}
+
+	// 一覧を返すモード
+	if ( target == nullptr)
+	{
+		// 標準を呼ぶだけ
+		return pDebug->get_varinf( target, option);
+	}
+
+	// 変数名からIDを逆引き
+	const auto& pHspctx = pDebug->hspctx;
+	const auto& pMem_mds = pHspctx->mem_mds;
+	const auto& pMem_di = pHspctx->mem_di;
+
+	char* name;
+	int id = 0;
+	int seek = 0;
+
+	bool bNotFound = true;
+	while ( bNotFound)
+	{
+		const auto& c = pMem_di[seek];
+
+		if ( c == 255)
+		{
+			break;
+		}
+		
+		switch (c)
+		{
+		case 252:
+			seek += 3;
+			break;
+
+		case 253:
+		{
+			int ds_offset = *((int*)&pMem_di[seek + 1]) & 0x00ffffff;
+			name = pMem_mds + ds_offset;
+
+			if ( ::strcmp( name, target) == 0)
+			{
+				bNotFound = false;
+				break;
+			}
+
+			id++;
+			seek += 6;
+			break;
+		}
+
+		case 254:
+			seek += 6;
+			break;
+
+		default:
+			seek++;
+			break;
+		}
+	}
+
+	// 指定された変数名が見つからない
+	if ( bNotFound)
+	{
+		return nullptr;
+	}
+
+	// サポートしている型かどうか？
+	const auto& pVal = &pHspctx->mem_var[id];
+	const auto& valType = pVal->flag;
+
+	const char* value;
+
+	if ( valType == HspVarInt64_typeid())
+	{
+		value = (const char*)HspVarInt64_CnvCustom( pVal->pt, HSPVAR_FLAG_STR);
+	}
+	else if ( valType == HspVarStrW_typeid())
+	{
+		value = (const char*)HspVarStrW_CnvCustom( pVal->pt, HSPVAR_FLAG_STR);
+	}
+	else if ( valType == HspVarFloat_typeid())
+	{
+		value = (const char*)HspVarFloat_CnvCustom( pVal->pt, HSPVAR_FLAG_STR);
+	}
+	else
+	{
+		// サポートしていない
+		return nullptr;
+	}
+
+	// 中身を書き換えて返す
+	CStringW& strIn_u16 = UTF8toUTF16( inBuf);
+	const CStringW& strVal_u16 = L"内容:\r\n" + UTF8toUTF16(value);
+	strIn_u16.Replace( L"内容:\r\nUnknown", strVal_u16);
+	outBuf = UTF16toUTF8( strIn_u16);
+
+	return outBuf.GetBuffer();
+}

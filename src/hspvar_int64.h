@@ -7,18 +7,14 @@
 
 #include "hspvar_core.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#define HSP_VAR_NAME_INT64 "int64"
 
-void HspVarInt64_Init( HspVarProc *p );
-int HspVarInt64_typeid(void);
-
-#ifdef __cplusplus
-}
-#endif
+EXPORT void HspVarInt64_Init(HspVarProc *p);
+EXPORT int HspVarInt64_typeid(void);
 
 void *HspVarInt64_Cnv(const void *buffer, int flag);
+void *HspVarInt64_CnvCustom(const void *buffer, int flag);
+
 #endif
 
 

@@ -7,18 +7,16 @@
 
 #include "hspvar_core.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#define HSP_VAR_NAME_STRW "strw"
 
-void HspVarStrW_Init( HspVarProc *p );
-int HspVarStrW_typeid( void );
+EXPORT void HspVarStrW_Init(HspVarProc *p);
+EXPORT int HspVarStrW_typeid(void);
 
-#ifdef __cplusplus
-}
-#endif
+CStringA UTF16toUTF8(const CStringW& utf16);
+CStringW UTF8toUTF16(const CStringA& utf8);
 
 void *HspVarStrW_Cnv(const void *buffer, int flag);
+void *HspVarStrW_CnvCustom(const void *buffer, int flag);
 
 #endif
 

@@ -234,8 +234,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="callback64.cpp" />
     <ClCompile Include="CallTest.cpp" />
     <ClCompile Include="hsp3plugin.cpp" />
+    <ClCompile Include="hspvar_callback64.cpp" />
     <ClCompile Include="hspvar_float.cpp" />
     <ClCompile Include="hspvar_int64.cpp" />
     <ClCompile Include="hspvar_strw.cpp" />
@@ -243,9 +245,11 @@
     <ClCompile Include="strbuf.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="callback64.h" />
     <ClInclude Include="hsp3debug.h" />
     <ClInclude Include="hsp3plugin.h" />
     <ClInclude Include="hsp3struct.h" />
+    <ClInclude Include="hspvar_callback64.h" />
     <ClInclude Include="hspvar_core.h" />
     <ClInclude Include="hspvar_float.h" />
     <ClInclude Include="hspvar_int64.h" />

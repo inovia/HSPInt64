@@ -53,7 +53,7 @@ static void BlockPtrPrepare( void )
 	if ( str_blockcur == 0 ) {
 		mem_sb = (SLOT *)MALLOC( sizeof(SLOT) );
 	} else {
-		mem_sb = (SLOT *)REALLOC( mem_sb, sizeof(SLOT) * ( str_blockcur + 2 ) );
+		mem_sb = (SLOT *)REALLOC( mem_sb, sizeof(SLOT) * ( str_blockcur + 1 ) );
 	}
 
 	sb = (STRBUF *)MALLOC( sizeof(STRBUF) * slot_len );

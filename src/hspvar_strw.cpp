@@ -16,18 +16,24 @@
 #include "hsp3debug.h"
 
 #include "strbuf.h"
+
+#include "hspvar_strw.h"
 #include "hspvar_int64.h"
 #include "hspvar_float.h"
 
+#ifdef _DEBUG
+#define TRACE(p) ::OutputDebugString(p); 
+#else
+#define TRACE(p)
+#endif
+
 /*------------------------------------------------------------*/
 /*
-		HSPVAR core interface (float)
+		HSPVAR core interface (strw)
 */
 /*------------------------------------------------------------*/
 
 #define GetPtr(pval) ((wchar_t *)pval)
-#define sbAlloc hspmalloc
-#define sbFree hspfree
 
 static int mytype;
 static CStringW conv;
@@ -39,7 +45,7 @@ static char custom[64];
 // UTF8 <- -> UTF-16 文字コード変換
 // https://www.codeproject.com/Articles/26134/UTF16-to-UTF8-to-UTF16-simple-CString-based-conver
 // ------------------------------------------------------------------------------
-static CStringA UTF16toUTF8(const CStringW& utf16)
+CStringA UTF16toUTF8(const CStringW& utf16)
 {
 	CStringA utf8;
 	int len = WideCharToMultiByte(CP_UTF8, 0, utf16, -1, NULL, 0, 0, 0);
@@ -52,7 +58,7 @@ static CStringA UTF16toUTF8(const CStringW& utf16)
 	return utf8;
 }
 
-static CStringW UTF8toUTF16(const CStringA& utf8)
+CStringW UTF8toUTF16(const CStringA& utf8)
 {
 	CStringW utf16;
 	int len = MultiByteToWideChar(CP_UTF8, 0, utf8, -1, NULL, 0);
@@ -127,7 +133,7 @@ void *HspVarStrW_Cnv( const void *buffer, int flag )
 }
 
 
-static void *HspVarStrW_CnvCustom( const void *buffer, int flag )
+void *HspVarStrW_CnvCustom( const void *buffer, int flag )
 {
 	//		(カスタムタイプのみ)
 	//		自分の型 -> リクエストされた型 への変換を行なう
@@ -187,6 +193,8 @@ static int GetVarSize(PVal *pval)
 
 static void HspVarStrW_Free(PVal *pval)
 {
+	TRACE( _T("HspVarStrW_Free\r\n"));
+
 	//		PVALポインタの変数メモリを解放する
 	//
 	char **pp;
@@ -204,6 +212,8 @@ static void HspVarStrW_Free(PVal *pval)
 
 static void HspVarStrW_Alloc(PVal *pval, const PVal *pval2)
 {
+	TRACE(_T("HspVarStrW_Alloc\r\n"));
+
 	//		pval変数が必要とするサイズを確保する。
 	//		(pvalがすでに確保されているメモリ解放は呼び出し側が行なう)
 	//		(pval2がNULLの場合は、新規データ。len[0]に確保バイト数が代入される)
@@ -223,7 +233,7 @@ static void HspVarStrW_Alloc(PVal *pval, const PVal *pval2)
 	if (pval2 == NULL) {							// 配列拡張なし
 		bsize = pval->len[0];
 		if (bsize < STRBUF_BLOCKSIZE) { bsize = STRBUF_BLOCKSIZE; }
-		for (i = 0; i < (int)(size / sizeof(char *)); i++) {
+		for (i = 0; i < (int)(size / sizeof(wchar_t *)); i++) {
 			pp = GetFlexBufPtr(pval, i);
 			*pp = sbAllocClear(bsize);
 			sbSetOption(*pp, (void *)pp);
@@ -380,7 +390,7 @@ EXPORT void HspVarStrW_Init( HspVarProc *p )
 	//	p->RrI = HspVarStrW_Invalid;
 	//	p->LrI = HspVarStrW_Invalid;
 
-	p->vartype_name = "strw";			// タイプ名
+	p->vartype_name = HSP_VAR_NAME_STRW;			// タイプ名
 	p->version = 0x001;					// 型タイプランタイムバージョン(0x100 = 1.0)
 	p->support = HSPVAR_SUPPORT_FLEXSTORAGE | HSPVAR_SUPPORT_FLEXARRAY;
 	// サポート状況フラグ(HSPVAR_SUPPORT_*)

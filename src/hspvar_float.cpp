@@ -13,6 +13,7 @@
 #include "hspvar_core.h"
 #include "hsp3debug.h"
 
+#include "hspvar_float.h"
 #include "hspvar_int64.h"
 
 /*------------------------------------------------------------*/
@@ -73,8 +74,7 @@ void *HspVarFloat_Cnv( const void *buffer, int flag )
 	return (void *)buffer;
 }
 
-
-static void *HspVarFloat_CnvCustom( const void *buffer, int flag )
+void *HspVarFloat_CnvCustom( const void *buffer, int flag )
 {
 	//		(カスタムタイプのみ)
 	//		自分の型 -> リクエストされた型 への変換を行なう
@@ -314,7 +314,7 @@ EXPORT void HspVarFloat_Init( HspVarProc *p )
 //	p->RrI = HspVarFloat_Invalid;
 //	p->LrI = HspVarFloat_Invalid;
 
-	p->vartype_name = "float";				// タイプ名
+	p->vartype_name = HSP_VAR_NAME_FLOAT;				// タイプ名
 	p->version = 0x001;					// 型タイプランタイムバージョン(0x100 = 1.0)
 	p->support = HSPVAR_SUPPORT_STORAGE|HSPVAR_SUPPORT_FLEXARRAY;
 										// サポート状況フラグ(HSPVAR_SUPPORT_*)
