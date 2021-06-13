@@ -11,11 +11,11 @@ hspint64.dll
 
 %ver
 ; バージョン を記入
-1.01
+1.03
 
 %date
 ; 日付 を記入
-2021/05/05
+2021/06/13
 
 %author
 ; 著作者 を記入
@@ -170,6 +170,7 @@ varptr64によって取得したポインタは、配列の拡張や内容の更新などにより変化する可能
 dupptr64
 int64
 varptr
+callback64_getptr
 
 %group
 ; グループ を記入
@@ -1732,3 +1733,192 @@ dupptr64
 ; グループ を記入
 int64
 
+%index
+callback64_new
+; 見出し を記入
+コールバック関数(64bit)を作成します
+
+%prm
+; パラメータリスト を記入
+; パラメータ説明文 を記入
+(p1, p2)
+p1      : 作成するコールバック関数の引数の数
+p2      : コールバック時にジャンプするサブルーチンラベル
+
+%inst
+; 解説文 を記入
+コールバック関数(64bit)を作成し、コールバック関数の情報が格納されたコールバック型の変数を返します。
+
+p1 には 作成するコールバック関数の引数の数を指定します。
+p2 には コールバックされるときに実行されるサブルーチンラベルを指定します。
+
+なお、コールバック関数のポインタ（アドレス）を取得するには、callback64_getptr 関数を使用してください。
+varptr や varptr64 では取得できません。
+
+%sample
+; サンプルスクリプト を記入
+#include "hsp3_64.as"
+#include "hspint64.as"
+
+#include "user32.as"
+
+	title "EnumWindows() の実験　※コールバック関数のテスト"
+
+	// コールバック関数作成
+	EnumWindowsProc = callback64_new( 2, *lbEnumWindowsProc)
+	pEnumWindowsProc = callback64_getptr( EnumWindowsProc)
+
+	// EnumWindows() を呼び出す
+	nCount = 0
+	cfunc64v EnumWindows, pEnumWindowsProc, varptr(nCount)
+
+stop
+
+*lbEnumWindowsProc
+	p1_hWnd = callback64_getprm( EnumWindowsProc, 0, RET_INT64 )
+	;p2_lParam = callback64_getprm( EnumWindowsProc, 1, RET_INT64 )
+
+	// ウィンドウタイトルを表示
+	sdim strAnsi, 1024 + 1
+	cfunc64v GetWindowTextA, p1_hWnd, varptr(strAnsi), 1024
+	if strAnsi != "" : mes cnvatos(strAnsi)
+
+	// 継続するので 1 を返す
+	callback64_setret EnumWindowsProc, 1
+
+return
+%href
+; 関連項目 を記入
+callback64_getptr
+callback64_getprm
+callback64_setret
+
+%group
+; グループ を記入
+callback64
+%index
+callback64_getptr
+; 見出し を記入
+コールバック関数のポインタ（アドレス）を取得します
+
+%prm
+; パラメータリスト を記入
+; パラメータ説明文 を記入
+(p1)
+p1      : コールバック型の変数（callback64_new で作成）
+
+%inst
+; 解説文 を記入
+コールバック関数(64bit)のポインタ（アドレス）を取得します。
+
+p1 には コールバック型の変数を指定します。
+
+callback64_getptr(Proc) のように記述すると、
+変数 Proc で管理されているコールバック関数のポインタ（アドレス）を返します。
+
+なお、コールバック関数のポインタ（アドレス）を取得するには、本関数を使用してください。
+varptr や varptr64 では取得できません。
+（コールバック型変数の管理情報のポインタが返るだけです）
+
+%sample
+; サンプルスクリプト を記入
+
+%href
+; 関連項目 を記入
+callback64_new
+
+%group
+; グループ を記入
+callback64
+%index
+callback64_getprm
+; 見出し を記入
+コールバック関数に渡された引数データを取得します
+
+%prm
+; パラメータリスト を記入
+; パラメータ説明文 を記入
+(p1, p2, p3)
+p1      : コールバック型の変数
+p2      : 引数のインデックス（0～）
+p3      : 引数の型
+
+%inst
+; 解説文 を記入
+コールバック関数に渡された引数データを取得します。
+
+p1 には コールバック型の変数を指定します。
+p2 には コールバック関数の引数のインデックスを指定します。
+p3 には p2 で指定した引数の型情報を指定します。以下の値が指定可能です。
+
+RET_INT			：　整数型(32bit)
+RET_INT64		：　整数型(64bit)
+RET_DOUBLE		：　小数型(64bit)
+RET_FLOAT		：　小数型(32bit)
+RET_FLOAT_INT	：　小数型(32bit) int へ強制キャスト
+RET_STR			：　文字列型
+RET_STRW		：　文字列型(UTF-16)
+
+RET_STR は文字コードの変換を行いません。
+必要であれば、 cnvatos 関数を実行してください。
+
+戻り値は p3 に指定した型情報で引数データが返ります。
+
+なお、コールバック関数外で本関数実行しても引数情報を取得可能です。
+（前回コールバック実行時の情報をキャッシュしています）
+
+%sample
+; サンプルスクリプト を記入
+
+%href
+; 関連項目 を記入
+callback64_new
+RET_INT
+RET_INT64
+RET_DOUBLE
+RET_FLOAT
+RET_FLOAT_INT
+RET_STR
+RET_STRW
+
+%group
+; グループ を記入
+callback64
+%index
+callback64_setret
+; 見出し を記入
+コールバック関数の戻り値を設定します
+
+%prm
+; パラメータリスト を記入
+; パラメータ説明文 を記入
+p1, p2
+p1      : コールバック型の変数
+p2      : 戻り値の値（数値、文字列、変数に対応）
+
+%inst
+; 解説文 を記入
+コールバック関数の戻り値を設定します。
+コールバック実行されたサブルーチンラベル内の return ではコールバック関数の戻り値を設定できないため、
+本命令を実行して、コールバック関数の戻り値を設定します。
+
+p1 には コールバック型の変数を指定します。
+p2 には コールバック関数の戻り値を設定します。
+
+数値 または 数値型の変数を指定した場合は、その値が設定されます。
+（実数値も同様）
+文字列 または 文字列型の変数を指定したときは、ポインタ値が設定されます。
+それ以外の変数を指定したときも、変数のポインタ値が設定されます。
+
+なお、p2 に指定した値は、次回コールバック実行時にも残っています。
+
+%sample
+; サンプルスクリプト を記入
+
+%href
+; 関連項目 を記入
+callback64_new
+
+%group
+; グループ を記入
+callback64

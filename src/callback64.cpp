@@ -15,15 +15,6 @@
 #define TRACE(p)
 #endif
 
-// HSPのラベルを呼ぶだけ
-static void Internal_Callback( PCallbackData pCData)
-{
-	// ラベル呼び出し
-	code_call( pCData->label);
-
-	// 戻り値はユーザーが明示的にセットするので、ここでやらない
-}
-
 bool callback64_new2( PCallbackData cData, int args_count)
 {
 	TRACE(_T("callback64_new2\r\n"));
@@ -41,7 +32,14 @@ bool callback64_new2( PCallbackData cData, int args_count)
 	}
 	
 	// HSPのラベルを呼ぶだけの仲介関数セット
-	cData->internal_call = Internal_Callback;
+	cData->internal_call = 
+		static_cast <void(*)(PCallbackData)>([](PCallbackData pCData)
+	{
+		// ラベル呼び出し
+		code_call(pCData->label); 
+
+		// 戻り値はユーザーが明示的にセットするので、ここでやらない
+	});
 
 	// コールバック用のメモリサイズ計算
 	cData->proc_call_size = static_cast<size_t>(

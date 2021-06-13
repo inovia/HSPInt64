@@ -1,0 +1,30 @@
+#include "hsp3_64.as"
+#include "hspint64.as"
+
+#include "user32.as"
+
+	title "EnumWindows() の実験　※コールバック関数のテスト"
+
+	// コールバック関数作成
+	EnumWindowsProc = callback64_new( 2, *lbEnumWindowsProc)
+	pEnumWindowsProc = callback64_getptr( EnumWindowsProc)
+
+	// EnumWindows() を呼び出す
+	nCount = 0
+	cfunc64v EnumWindows, pEnumWindowsProc, varptr(nCount)
+
+stop
+
+*lbEnumWindowsProc
+	p1_hWnd = callback64_getprm( EnumWindowsProc, 0, RET_INT64 )
+	;p2_lParam = callback64_getprm( EnumWindowsProc, 1, RET_INT64 )
+
+	// ウィンドウタイトルを表示
+	sdim strAnsi, 1024 + 1
+	cfunc64v GetWindowTextA, p1_hWnd, varptr(strAnsi), 1024
+	if strAnsi != "" : mes cnvatos(strAnsi)
+
+	// 継続するので 1 を返す
+	callback64_setret EnumWindowsProc, 1
+
+return

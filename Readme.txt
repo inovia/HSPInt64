@@ -49,3 +49,5 @@ http://prograpark.ninja-web.net/HSP/index.html
    3.6b4  - 1.02     - 
 ・qpeek,qpokeの不具合修正
 ・libptr64関数追加
+   3.6b4  - 1.03     - 
+・コールバック関数に対応
