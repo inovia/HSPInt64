@@ -26,6 +26,10 @@
 #cmd strwinsert $15
 #cmd strwcomp $16
 #cmd libptr64 $17
+#cmd callback64_new $18
+#cmd callback64_getptr $19
+#cmd callback64_getprm $1A
+#cmd callback64_setret $1B
 
 #cmd cfunc64v $100
 #cmd cfunc64i $101
@@ -44,6 +48,7 @@
 #define global RET_FLOAT_INT	4		// float値をint型変数で返します
 #define global RET_STR			5		// 文字列型で返します
 #define global RET_STRW			6		// Unicode文字列型(UTF-16)で返します
+#define global RET_CALLBACK64	7		// Callback64型で返します
 
 #define global ctype L(%1) strw(%1)
 #define global ctype _T(%1) L(%1)
