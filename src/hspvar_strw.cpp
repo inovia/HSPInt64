@@ -27,6 +27,7 @@
 #define TRACE(p)
 #endif
 
+
 /*------------------------------------------------------------*/
 /*
 		HSPVAR core interface (strw)
@@ -74,6 +75,8 @@ CStringW UTF8toUTF16(const CStringA& utf8)
 
 static char **GetFlexBufPtr(PVal *pval, int num)
 {
+	TRACE(_T("GetFlexBufPtr\r\n"));
+
 	//		可変長バッファのポインタを得る
 	//
 	char **pp;
@@ -85,6 +88,8 @@ static char **GetFlexBufPtr(PVal *pval, int num)
 // Core
 static PDAT *HspVarStrW_GetPtr(PVal *pval)
 {
+	TRACE(_T("HspVarStrW_GetPtr\r\n"));
+
 	char **pp;
 	pp = GetFlexBufPtr(pval, pval->offset);
 	return (PDAT *)(*pp);
@@ -92,6 +97,8 @@ static PDAT *HspVarStrW_GetPtr(PVal *pval)
 
 void *HspVarStrW_Cnv( const void *buffer, int flag )
 {
+	TRACE(_T("HspVarStrW_Cnv\r\n"));
+
 	//		リクエストされた型 -> 自分の型への変換を行なう
 	//		(組み込み型にのみ対応でOK)
 	//		(参照元のデータを破壊しないこと)
@@ -135,6 +142,8 @@ void *HspVarStrW_Cnv( const void *buffer, int flag )
 
 void *HspVarStrW_CnvCustom( const void *buffer, int flag )
 {
+	TRACE(_T("HspVarStrW_CnvCustom\r\n"));
+
 	//		(カスタムタイプのみ)
 	//		自分の型 -> リクエストされた型 への変換を行なう
 	//		(組み込み型に対応させる)
@@ -177,6 +186,8 @@ void *HspVarStrW_CnvCustom( const void *buffer, int flag )
 
 static int GetVarSize(PVal *pval)
 {
+	TRACE(_T("GetVarSize\r\n"));
+
 	//		PVALポインタの変数が必要とするサイズを取得する
 	//		(sizeフィールドに設定される)
 	//
@@ -205,7 +216,7 @@ static void HspVarStrW_Free(PVal *pval)
 			pp = GetFlexBufPtr(pval, i);
 			sbFree(*pp);
 		}
-		hspfree(pval->master);
+		free(pval->master);
 	}
 	pval->mode = HSPVAR_MODE_NONE;
 }
@@ -252,7 +263,7 @@ static void HspVarStrW_Alloc(PVal *pval, const PVal *pval2)
 		}
 		sbSetOption(*pp, (void *)pp);
 	}
-	hspfree(oldvar.master);
+	free(oldvar.master);
 }
 /*
 static void *HspVarFloat_ArrayObject( PVal *pval, int *mptype )
@@ -267,12 +278,15 @@ static void *HspVarFloat_ArrayObject( PVal *pval, int *mptype )
 // Size
 static int HspVarStrW_GetSize(const PDAT *pdat)
 {
+	TRACE(_T("HspVarStrW_GetSize\r\n"));
 	return (int)(wcslen((wchar_t *)pdat) * 2 + 2);
 }
 
 // Set
 static void HspVarStrW_Set(PVal *pval, PDAT *pdat, const void *in)
 {
+	TRACE(_T("HspVarStrW_Set\r\n"));
+
 	char **pp;
 	if (pval->mode == HSPVAR_MODE_CLONE) {
 		wcsncpy((wchar_t *)pdat, (wchar_t *)in, pval->size / 2);		// byte -> 文字数
@@ -286,6 +300,8 @@ static void HspVarStrW_Set(PVal *pval, PDAT *pdat, const void *in)
 // Add
 static void HspVarStrW_AddI(PDAT *pval, const void *val)
 {
+	TRACE(_T("HspVarStrW_AddI\r\n"));
+
 	char **pp;
 	pp = (char **)sbGetOption((char *)pval);
 	sbStrAdd(pp, (char *)val);
@@ -297,6 +313,8 @@ static void HspVarStrW_AddI(PDAT *pval, const void *val)
 // Eq
 static void HspVarStrW_EqI(PDAT *pdat, const void *val)
 {
+	TRACE(_T("HspVarStrW_EqI\r\n"));
+
 	if (wcscmp((wchar_t *)pdat, (wchar_t *)val)) {
 		*(int *)pdat = 0;
 	}
@@ -309,6 +327,8 @@ static void HspVarStrW_EqI(PDAT *pdat, const void *val)
 // Ne
 static void HspVarStrW_NeI(PDAT *pdat, const void *val)
 {
+	TRACE(_T("HspVarStrW_NeI\r\n"));
+
 	int i;
 	i = wcscmp((wchar_t *)pdat, (wchar_t *)val);
 	if (i < 0) i = -1;
@@ -327,6 +347,8 @@ static void HspVarFloat_Invalid( PDAT *pval, const void *val )
 
 static void *GetBlockSize(PVal *pval, PDAT *pdat, int *size)
 {
+	TRACE(_T("GetBlockSize\r\n"));
+
 	STRINF *inf;
 	if (pval->mode == HSPVAR_MODE_CLONE) {
 		*size = pval->size;
@@ -339,6 +361,8 @@ static void *GetBlockSize(PVal *pval, PDAT *pdat, int *size)
 
 static void AllocBlock(PVal *pval, PDAT *pdat, int size)
 {
+	TRACE(_T("AllocBlock\r\n"));
+
 	char **pp;
 	if (pval->mode == HSPVAR_MODE_CLONE) return;
 	pp = (char **)sbGetOption((char *)pdat);

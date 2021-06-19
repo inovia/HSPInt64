@@ -5,14 +5,8 @@
 #ifndef __strbuf_h
 #define __strbuf_h
 
-#define STRBUF_BLOCKSIZE 128
-#define STRBUF_BLOCK_DEFAULT 0x400
-#define STRBUF_SEGMENT_DEFAULT 0x1000
-
-#define STRINF_FLAG_NONE 0
-#define STRINF_FLAG_USEINT 1
-#define STRINF_FLAG_USEEXT 2
-
+#define STRBUF_BLOCKSIZE 64
+#define STRBUF_BLOCKSIZE_W 128
 
 //	STRBUF structure
 //
@@ -40,9 +34,6 @@ struct STRBUF
 	char data[STRBUF_BLOCKSIZE] ;	// 内部バッファ
 };
 
-void sbInit( void );
-void sbBye( void );
-
 char *sbAlloc( int size );
 char *sbAllocClear( int size );
 void sbFree( void *ptr );
@@ -56,6 +47,5 @@ void sbStrAdd( char **ptr, char *str );
 
 void *sbGetOption( char *ptr );
 void sbSetOption( char *ptr, void *option );
-void sbInfo( char *ptr );
 
 #endif

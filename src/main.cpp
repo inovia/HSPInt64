@@ -1076,8 +1076,6 @@ static int termfunc( int option )
 	//		終了処理 (アプリケーション終了時に呼ばれます)
 	//
 
-	sbBye();
-
 	return 0;
 }
 
@@ -1105,8 +1103,6 @@ EXPORT void WINAPI hsp3cmdinit( HSP3TYPEINFO *info )
 	info->reffunc = reffunc;		// 参照関数(reffunc)の登録
 	info->cmdfunc = cmdfunc;		// 命令の登録
 	info->termfunc = termfunc;		// 終了関数(termfunc)の登録
-
-	sbInit();					// 可変メモリバッファ初期化
 
 	registvar( -1, HspVarInt64_Init );			// 新しい型の追加
 	registvar( -1, HspVarFloat_Init );			// 新しい型の追加

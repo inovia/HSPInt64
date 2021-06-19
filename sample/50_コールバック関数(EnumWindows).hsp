@@ -20,9 +20,9 @@ stop
 	;p2_lParam = callback64_getprm( EnumWindowsProc, 1, RET_INT64 )
 
 	// ウィンドウタイトルを表示
-	sdim strAnsi, 1024 + 1
-	cfunc64v GetWindowTextA, p1_hWnd, varptr(strAnsi), 1024
-	if strAnsi != "" : mes cnvatos(strAnsi)
+	swdim strText, (512 + 1) * 2
+	cfunc64v GetWindowTextW, p1_hWnd, varptr(strText), 512
+	if strText != _T("") : mes strText
 
 	// 継続するので 1 を返す
 	callback64_setret EnumWindowsProc, 1
