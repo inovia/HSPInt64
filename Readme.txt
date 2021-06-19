@@ -1,17 +1,17 @@
-�� hspint64
+﻿☆ hspint64
 
-�� �Ɛӎ���
+■ 免責事項
 
-�E�{�\�t�g�͖����Ŏg�����Ƃ��ł��܂�
-�E�t���̃\�[�X�R�[�h�̃��C�Z���X��OpenHSP�̃��C�Z���X�ɏ������܂�
-�E�{�\�t�g�𗘗p�������ɂ�邢���Ȃ鑹�Q����҂͈�؂̐ӔC�𕉂��܂���
-�E�z�z�A�]�ځA�����͖��f�����R�ɂ��č\���܂���i�劽�}�j
-�E�ǋL�E�V�K�ǉ������\�[�X�R�[�h�����Ă��߂�Ȃ���
-�E���Ԃ�o�O������܂��B
-�Ehspint64�̃\�[�X�R�[�h��github�ɂĊǗ����Ă��܂��B
+・本ソフトは無料で使うことができます
+・付属のソースコードのライセンスはOpenHSPのライセンスに準拠します
+・本ソフトを利用した事によるいかなる損害も作者は一切の責任を負いません
+・配布、転載、改造は無断かつ自由にして構いません（大歓迎）
+・追記・新規追加したソースコード汚くてごめんなさい
+・たぶんバグがあります。
+・hspint64のソースコードはgithubにて管理しています。
 https://github.com/inovia/HSPInt64
 
-�� �Ή��@�\
+■ 対応機能
 
 int()
 lpeek()
@@ -20,39 +20,39 @@ varptr()
 dupptr()
 callfunc()
 
-�̂Ȃǂ�64bit�Ή���
+のなどの64bit対応版
 
-�� �A���� 
+■ 連絡先 
 
-�C�m�r�A(inovia)
+イノビア(inovia)
 https://twitter.com/hk1v
 https://hsp.moe/
 https://github.com/inovia/
 
-�� �ӎ�
+■ 謝辞
 
-�{�\�t�g�� OpenHSP/HSP3SDK ���g�p���Ă���܂��B
+本ソフトは OpenHSP/HSP3SDK を使用しております。
 http://www.onionsoft.net/hsp/openhsp/
 
-��厁�̃T�C�g���Q�l�ɂ��܂����B
+上大氏のサイトを参考にしました。
 http://prograpark.ninja-web.net/HSP/index.html
 
-�� �o�[�W����
+■ バージョン
 
-�@ 3.5b2  - 1.00     - �����o�[�W�����i���쎞�ԁF�v5���Ԃقǁj
+　 3.5b2  - 1.00     - 初期バージョン（製作時間：計5時間ほど）
    3.6b4  - 1.01     - 
-�E�s��̏C��
-�E�ϒ������`����callfunc���֐���ǉ� [cfunc64]
-�@�i�z��ň����f�[�^��n���Ȃ��̂Œ����I�j
-�Efloat�^�AUTF-16�^�ϐ��^��ǉ�
-�@�iWin32API��DX���C�u���������������j
+・不具合の修正
+・可変長引数形式のcallfunc風関数を追加 [cfunc64]
+　（配列で引数データを渡さないので直感的）
+・float型、UTF-16型変数型を追加
+　（Win32APIやDXライブラリを扱う向け）
    3.6b5  - 1.02     - 
-�Eqpeek,qpoke�̕s��C��
-�Elibptr64�֐��ǉ�
+・qpeek,qpokeの不具合修正
+・libptr64関数追加
    3.6b5  - 1.03     - 
-�E�R�[���o�b�N�֐��ɑΉ�
+・コールバック関数に対応
    3.6b5  - 1.04     - 
-�E�s����C��
-�@�Ehspint64.as �̋L�q�~�X�ɂ��ACallback�n���g���Ȃ��Ȃ��Ă���
-�@�EUTF-16�^������ϐ��̃��������s����C��
-�@�E�R�[���o�b�N�֐���float�l���n��Ȃ��s����C��
+・不具合を修正
+　・hspint64.as の記述ミスにより、Callback系が使えなくなっていた
+　・UTF-16型文字列変数のメモリ回り不具合を修正
+　・コールバック関数のfloat値が渡らない不具合を修正
