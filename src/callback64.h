@@ -1,10 +1,11 @@
 #pragma once
 
 // XMM系レジスタを保存用
-typedef union _XMM
+typedef union _XMM				// max = 128bit
 {
 	BYTE val[16];				// 128bit
 	double val_d;				//  64bit
+	float val_f;				//  32bit
 } XMM;
 
 // コールバック情報構造体

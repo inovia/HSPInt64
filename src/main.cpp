@@ -717,7 +717,7 @@ static void *reffunc( int *type_res, int cmd )
 				}
 				else if ( ref_type == RET_TYPE::Float || ref_type == RET_TYPE::FloatInt )
 				{
-					ref_floatval = p1->xmm0.val_d;
+					ref_floatval = p1->xmm0.val_f;
 				}
 				else if ( ref_type == RET_TYPE::Str )
 				{
@@ -742,7 +742,7 @@ static void *reffunc( int *type_res, int cmd )
 				}
 				else if (ref_type == RET_TYPE::Float || ref_type == RET_TYPE::FloatInt)
 				{
-					ref_floatval = p1->xmm1.val_d;
+					ref_floatval = p1->xmm1.val_f;
 				}
 				else if (ref_type == RET_TYPE::Str)
 				{
@@ -767,7 +767,7 @@ static void *reffunc( int *type_res, int cmd )
 				}
 				else if (ref_type == RET_TYPE::Float || ref_type == RET_TYPE::FloatInt)
 				{
-					ref_floatval = p1->xmm2.val_d;
+					ref_floatval = p1->xmm2.val_f;
 				}
 				else if (ref_type == RET_TYPE::Str)
 				{
@@ -792,7 +792,7 @@ static void *reffunc( int *type_res, int cmd )
 				}
 				else if (ref_type == RET_TYPE::Float || ref_type == RET_TYPE::FloatInt)
 				{
-					ref_floatval = p1->xmm3.val_d;
+					ref_floatval = p1->xmm3.val_f;
 				}
 				else if (ref_type == RET_TYPE::Str)
 				{

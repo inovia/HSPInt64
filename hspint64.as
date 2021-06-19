@@ -1,7 +1,7 @@
 ;#include"hsp3_64.as"
 
 #ifdef __hsp64__
-#regcmd "hsp3cmdinit","hspint64.dll", 3
+#regcmd "hsp3cmdinit","hspint64.dll", 4
 #cmd int64 $00
 #cmd qpeek $01
 #cmd qpoke $02

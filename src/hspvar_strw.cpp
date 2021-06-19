@@ -205,7 +205,7 @@ static void HspVarStrW_Free(PVal *pval)
 			pp = GetFlexBufPtr(pval, i);
 			sbFree(*pp);
 		}
-		free(pval->master);
+		hspfree(pval->master);
 	}
 	pval->mode = HSPVAR_MODE_NONE;
 }
@@ -252,7 +252,7 @@ static void HspVarStrW_Alloc(PVal *pval, const PVal *pval2)
 		}
 		sbSetOption(*pp, (void *)pp);
 	}
-	free(oldvar.master);
+	hspfree(oldvar.master);
 }
 /*
 static void *HspVarFloat_ArrayObject( PVal *pval, int *mptype )

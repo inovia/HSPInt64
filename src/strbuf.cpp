@@ -11,11 +11,12 @@
 #include <string.h>
 #include "strbuf.h"
 
+#include "hsp3plugin.h"
 #include "hsp3debug.h"
 
-#define REALLOC realloc
-#define MALLOC malloc
-#define FREE free
+#define REALLOC hspexpand
+#define MALLOC hspmalloc
+#define FREE hspfree
 
 /*------------------------------------------------------------*/
 /*
@@ -53,7 +54,7 @@ static void BlockPtrPrepare( void )
 	if ( str_blockcur == 0 ) {
 		mem_sb = (SLOT *)MALLOC( sizeof(SLOT) );
 	} else {
-		mem_sb = (SLOT *)REALLOC( mem_sb, sizeof(SLOT) * ( str_blockcur + 1 ) );
+		mem_sb = (SLOT *)REALLOC( (char*)mem_sb, sizeof(SLOT) * ( str_blockcur + 1 ) );
 	}
 
 	sb = (STRBUF *)MALLOC( sizeof(STRBUF) * slot_len );
